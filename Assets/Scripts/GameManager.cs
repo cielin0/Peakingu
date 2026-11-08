@@ -14,6 +14,17 @@ namespace Peakingu
         [Tooltip("Cantidad actual de vidas.")]
         [SerializeField] private int currentLives = 5;
 
+        [Header("Monedas")]
+        [Tooltip("Cantidad actual de monedas acumuladas.")]
+        [SerializeField] private int currentCoins = 0;
+
+        [Header("Temporizador (Pescado en el horno)")]
+        [Tooltip("Tiempo límite inicial en segundos (20 minutos = 1200 s por defecto).")]
+        [SerializeField] private float initialTimeInSeconds = 1200f;
+        [Tooltip("Indica si el temporizador regresivo se encuentra activo.")]
+        [SerializeField] private bool timerIsRunning = true;
+        [SerializeField] private float currentTimeRemaining;
+
         [Header("Checkpoint y Respawn")]
         [Tooltip("Punto inicial de aparición por defecto.")]
         [SerializeField] private Vector3 spawnPosition = new Vector3(-8f, -1f, 0f);
@@ -22,11 +33,18 @@ namespace Peakingu
 
         // Eventos públicos
         public static event Action<int> OnLivesChanged;
+        public static event Action<int> OnCoinsChanged;
+        public static event Action<float> OnTimerTick;
+        public static event Action OnTimerExpired;
         public static event Action OnGameOver;
         public static event Action<Vector3> OnPlayerRespawned;
 
         public int CurrentLives => currentLives;
         public int MaxLives => maxLives;
+        public int CurrentCoins => currentCoins;
+        public float InitialTimeInSeconds => initialTimeInSeconds;
+        public float CurrentTimeRemaining => currentTimeRemaining;
+        public bool TimerIsRunning => timerIsRunning;
         public Vector3 CurrentCheckpoint => hasCheckpoint ? currentCheckpoint : spawnPosition;
 
         private void Awake()
@@ -41,6 +59,7 @@ namespace Peakingu
             DontDestroyOnLoad(gameObject);
 
             currentLives = maxLives;
+            currentTimeRemaining = initialTimeInSeconds;
             currentCheckpoint = spawnPosition;
         }
 
@@ -48,6 +67,34 @@ namespace Peakingu
         {
             FindPlayerAndRegisterSpawn();
             OnLivesChanged?.Invoke(currentLives);
+            OnCoinsChanged?.Invoke(currentCoins);
+            OnTimerTick?.Invoke(currentTimeRemaining);
+        }
+
+        private void Update()
+        {
+            UpdateCountdownTimer();
+        }
+
+        private void UpdateCountdownTimer()
+        {
+            if (!timerIsRunning || currentLives <= 0) return;
+
+            currentTimeRemaining -= Time.deltaTime;
+
+            if (currentTimeRemaining <= 0f)
+            {
+                currentTimeRemaining = 0f;
+                timerIsRunning = false;
+                OnTimerTick?.Invoke(currentTimeRemaining);
+                OnTimerExpired?.Invoke();
+                Debug.Log("[GameManager] ¡El tiempo llegó a 00:00! El pescado se ha quemado.");
+                TriggerGameOver();
+            }
+            else
+            {
+                OnTimerTick?.Invoke(currentTimeRemaining);
+            }
         }
 
         private void OnEnable()
@@ -82,6 +129,66 @@ namespace Peakingu
             Debug.Log($"[GameManager] Checkpoint alcanzado en: {newCheckpoint}");
         }
 
+        #region Sistema de Monedas
+        /// <summary>
+        /// Agrega monedas a la reserva del jugador y notifica a los observadores (HUD).
+        /// </summary>
+        public void AddCoins(int amount = 1)
+        {
+            if (amount <= 0) return;
+
+            currentCoins += amount;
+            OnCoinsChanged?.Invoke(currentCoins);
+            Debug.Log($"[GameManager] Monedas recolectadas: +{amount}. Total: {currentCoins}");
+        }
+
+        /// <summary>
+        /// Gasta monedas si el jugador tiene suficiente saldo. Retorna true si tuvo éxito.
+        /// </summary>
+        public bool SpendCoins(int amount)
+        {
+            if (amount <= 0) return false;
+
+            if (currentCoins >= amount)
+            {
+                currentCoins -= amount;
+                OnCoinsChanged?.Invoke(currentCoins);
+                Debug.Log($"[GameManager] Monedas gastadas: -{amount}. Saldo actual: {currentCoins}");
+                return true;
+            }
+
+            Debug.LogWarning($"[GameManager] Fondos insuficientes: requiere {amount}, pero tiene {currentCoins}");
+            return false;
+        }
+
+        public void ResetCoins()
+        {
+            currentCoins = 0;
+            OnCoinsChanged?.Invoke(currentCoins);
+        }
+        #endregion
+
+        #region Sistema de Temporizador
+        public void SetTimerRunning(bool running)
+        {
+            timerIsRunning = running;
+        }
+
+        public void ResetTimer(float? newTimeInSeconds = null)
+        {
+            currentTimeRemaining = newTimeInSeconds ?? initialTimeInSeconds;
+            timerIsRunning = true;
+            OnTimerTick?.Invoke(currentTimeRemaining);
+        }
+
+        public void AddTime(float seconds)
+        {
+            currentTimeRemaining = Mathf.Max(0f, currentTimeRemaining + seconds);
+            OnTimerTick?.Invoke(currentTimeRemaining);
+        }
+        #endregion
+
+        #region Vidas y Daño
         /// <summary>
         /// Método público llamado por obstáculos, enemigos y KillZone para infligir daño.
         /// </summary>
@@ -127,7 +234,8 @@ namespace Peakingu
 
         private void TriggerGameOver()
         {
-            Debug.Log("[GameManager] GAME OVER: Las vidas llegaron a 0.");
+            timerIsRunning = false;
+            Debug.Log("[GameManager] GAME OVER: Condición de derrota cumplida.");
             OnGameOver?.Invoke();
         }
 
@@ -141,7 +249,10 @@ namespace Peakingu
         {
             hasCheckpoint = false;
             ResetLives();
+            ResetCoins();
+            ResetTimer();
             RespawnPlayer();
         }
+        #endregion
     }
 }

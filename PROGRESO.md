@@ -1,7 +1,7 @@
 # PROGRESO - Peakingu
 
 ## 1. Ya implementado
-- Inicialización y verificación del proyecto base en Unity 6 (6000.5.10f1) con plantilla Universal 2D (URP).
+- Inicialización y verificación del proyecto base en Unity 6 (6000.5.10f1 / 6000.6) con plantilla Universal 2D (URP).
 - Estructura de carpetas completa en `Assets/`.
 - Escenas operativas (`Menu.unity`, `Nivel1.unity`, `Cueva.unity`) en Build Settings.
 - Tags, Layers y Sorting Layers configurados con matriz de física 2D.
@@ -18,26 +18,59 @@
   - Contador de 5 vidas configurables (`maxLives = 5`, `currentLives = 5`).
   - Método público `TakeDamage(int damage = 1)` que descuenta vidas, dispara `OnLivesChanged`, genera respawn o dispara el evento `OnGameOver` al llegar a 0.
   - Gestión y almacenamiento de la posición del último Checkpoint activo.
-- **KillZone (`Assets/Scripts/KillZone.cs`)**:
-  - Trigger ubicado bajo el nivel (Y = -7) que detecta a Pingu, resta 1 vida y lo reaparece en el último checkpoint.
-- **Checkpoint (`Assets/Scripts/Checkpoint.cs`)**:
-  - Trigger en Layer y Tag `Checkpoint` que registra su posición en el `GameManager` al contacto con el jugador.
-  - Retroalimentación visual interactiva (cambia de color dorado a verde al activarse).
-- **Hazard (`Assets/Scripts/Hazard.cs`)**:
-  - Componente reutilizable para pinchos y obstáculos que llama a `TakeDamage()` por trigger o colisión física.
+  - **Sistema de Monedas**: saldo actual (`currentCoins`), métodos `AddCoins(int amount)`, `SpendCoins(int amount)`, `ResetCoins()` y evento `OnCoinsChanged`.
+  - **Temporizador Regresivo (Pescado en el horno)**: `initialTimeInSeconds = 1200f` (20:00 configurable), cuenta regresiva frame a frame, evento `OnTimerTick`, evento `OnTimerExpired` y disparo automático de `OnGameOver` si el tiempo llega a 0.
+- **Coleccionable Coin (`Assets/Scripts/Coin.cs`)**:
+  - Componente con detección de contacto por Trigger con Pingu (`Player`).
+  - Suma automáticamente al `GameManager.Instance.AddCoins(value)`.
+  - Animación suave de oscilación vertical (bobbing) opcional en el mundo.
+  - Reproducción opcional de SFX / VFX y destrucción inmediata tras recolección (`Destroy(gameObject)`).
+- **HUD con Canvas y TextMeshPro (`Assets/Scripts/HUDManager.cs`)**:
+  - Canvas en modo `ScreenSpaceOverlay` con `CanvasScaler` en `ScaleWithScreenSize` (resolución base 1920x1080, match 0.5).
+  - **Corazones de Vida**: visualización dinámica de 5 corazones (llenos y vacíos) sincronizados con `OnLivesChanged`.
+  - **Temporizador Regresivo**: visualización con `TextMeshProUGUI` formateado en `TIME: MM:SS` (inicia en 20:00). Alerta en color rojo cuando resta menos de 1 minuto. Dispara `OnGameOver` al llegar a 0.
+  - **Contador de Monedas**: icono de moneda y texto `TextMeshProUGUI` sincronizado con `OnCoinsChanged`.
+  - **Medidor de Altura**: medidor en tiempo real `HEIGHT: {Y}m` según la posición vertical Y de Pingu respecto al nivel base.
+  - **Panel de Game Over**: overlay emergente activado al dispararse `OnGameOver` con mensaje adaptativo si la derrota fue por vidas o por tiempo agotado (pescado quemado).
+- **Escena Menú Principal (`Assets/Scenes/Menu.unity`) y `MenuManager.cs`**:
+  - Canvas adaptable con `CanvasScaler` en modo `ScaleWithScreenSize` (1920x1080).
+  - Fondo panorámico gélido estilo cartoon (`Menu_Background.png`).
+  - Logo y título "PEAKINGU" estilizado con TextMeshPro y subtítulo narrativo.
+  - Menú principal alineado a la derecha con 4 botones cartoon:
+    - **INICIAR**: Dispara corrutina de transición con fundido a negro (CanvasGroup con fade alpha de 0 a 1) y carga asíncrona/directa de la escena `Nivel1`.
+    - **CARGAR PARTIDA**: Conectado a `OnLoadGameClicked()` (preparado para futuras versiones, sin función bloqueante).
+    - **CONTROLES**: Abre ventana emergente detallando el esquema de controles del juego (WASD, Espacio, F Dash, R Gancho, E Mercader, ESC Config) con botón Volver.
+    - **CONFIGURACIÓN**: Abre ventana modal con `Slider` interactivo de volumen maestro (`AudioListener.volume`), lectura de porcentaje en tiempo real y persistencia en `PlayerPrefs`.
+  - Transición de fundido a negro en pantalla completa (`Fade_Overlay` con `CanvasGroup` e `Image` negra).
+- **Sprites Pixel Art Creados**:
+  - `Assets/Sprites/Heart_Full.png`
+  - `Assets/Sprites/Heart_Empty.png`
+  - `Assets/Sprites/Coin.png`
+  - `Assets/Sprites/Height_Icon.png`
+  - `Assets/Sprites/Button_Bg.png` (9-sliced)
+  - `Assets/Sprites/Panel_Bg.png` (9-sliced)
+  - `Assets/Sprites/Slider_Track.png` y `Slider_Fill.png`
+  - `Assets/Sprites/Menu_Background.png`
 - **Prefabs generados**:
   - `Assets/Prefabs/Pingu.prefab`
   - `Assets/Prefabs/GameManager.prefab`
   - `Assets/Prefabs/Checkpoint.prefab`
+  - `Assets/Prefabs/Coin.prefab`
+  - `Assets/Prefabs/HUD.prefab`
 - **Tilemap y Cinemachine 2D en Nivel 1**:
   - Suelo continuo con `CompositeCollider2D`.
   - Cámara de seguimiento con Dead Zone, Look-ahead vertical y Confiner 2D.
+  - Monedas flotantes interactivas colocadas sobre las plataformas de hielo de Nivel 1.
+  - HUD completamente integrado y operativo en la escena.
 
 ## 2. Decisiones tomadas
 - **Iluminación 2D en URP:** En el renderizador 2D de URP, los materiales de sprite por defecto (`Sprite-Lit-Default`) requieren explícitamente que la luz 2D tenga marcadas las Sorting Layers donde se ubican los objetos. Se incluyeron todas las capas del proyecto (`Default`, `Background`, `Environment`, `Collectibles`, `Characters`, `Foreground`) en el campo `targetSortingLayers` de la `Global Light 2D`.
+- **Canvas Scaler:** Se utiliza `ScaleWithScreenSize` con resolución de referencia 1920x1080 y `Match = 0.5` para garantizar una escala adecuada tanto en pantallas 16:9 como en variaciones ultra-wide o ventana de navegador WebGL.
+- **Manejo Centralizado del Tiempo:** La cuenta regresiva del temporizador se gestiona en `GameManager` para permitir persistencia entre niveles/escenas, disparar la derrota global (`OnGameOver`) y alimentar reactivamente al `HUDManager`.
+- **Transición de Menú:** El efecto de fundido a negro utiliza `CanvasGroup.alpha` con `Time.unscaledDeltaTime` asegurando transiciones suaves incluso si el tiempo del juego se pausa o cambia de escala.
 
 ## 3. Pendiente
 - Configuración de Input Actions (WASD, Espacio, E, F, R, ESC) con el nuevo Input System.
-- Temporizador configurable de 20 minutos (pescado quemándose).
-- Mecánica de gancho (tecla R).
-- Sistema de monedas y tienda/mercader interactiva (tecla E).
+- Mecánica de gancho cyborg (tecla R).
+- Sistema de tienda / mercader interactivo (tecla E) utilizando las monedas acumuladas.
+- Construcción y ambientación de los niveles restantes (Nivel 2, Escena 3 Caverna, etc.).
