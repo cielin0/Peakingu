@@ -61,6 +61,9 @@ namespace Peakingu
         public bool IsDashing => isDashing;
         public bool IsFacingRight => isFacingRight;
         public bool IsMovementLocked => isMovementLocked;
+        public bool IsGrounded => isGrounded;
+        public float HorizontalInput => horizontalInput;
+        public Vector2 Velocity => rb != null ? rb.linearVelocity : Vector2.zero;
 
         // Propiedades de mejoras activas
         public bool HasJetBoots => hasJetBoots;

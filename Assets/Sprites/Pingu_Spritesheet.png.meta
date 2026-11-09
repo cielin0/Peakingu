@@ -1,0 +1,724 @@
+fileFormatVersion: 2
+guid: a5fcc937bfeb9f349aa66778d5a3c44d
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 622747880993609320
+    second: Pingu_Spritesheet_0
+  - first:
+      213: -300385400740212692
+    second: Pingu_Spritesheet_1
+  - first:
+      213: 599029007105340949
+    second: Pingu_Spritesheet_2
+  - first:
+      213: -5229148320936105440
+    second: Pingu_Spritesheet_3
+  - first:
+      213: 7890439072509762252
+    second: Pingu_Spritesheet_4
+  - first:
+      213: 1451336221048750146
+    second: Pingu_Spritesheet_5
+  - first:
+      213: -1782934371102060418
+    second: Pingu_Spritesheet_6
+  - first:
+      213: 5217779435407624997
+    second: Pingu_Spritesheet_7
+  - first:
+      213: -1289802303195666109
+    second: Pingu_Spritesheet_8
+  - first:
+      213: -7448148602325168868
+    second: Pingu_Spritesheet_9
+  - first:
+      213: -2097928051608651758
+    second: Pingu_Spritesheet_10
+  - first:
+      213: 4891481839249989517
+    second: Pingu_Spritesheet_11
+  - first:
+      213: -7481464271931011293
+    second: Pingu_Spritesheet_12
+  - first:
+      213: 4328853086260664486
+    second: Pingu_Spritesheet_13
+  - first:
+      213: 8362198526072678291
+    second: Pingu_Spritesheet_14
+  - first:
+      213: -6518314067083146989
+    second: Pingu_Spritesheet_15
+  - first:
+      213: -4760966225075825997
+    second: Pingu_Spritesheet_16
+  - first:
+      213: 6610608308701011409
+    second: Pingu_Spritesheet_17
+  - first:
+      213: -3771762608165215447
+    second: Pingu_Idle_0
+  - first:
+      213: 1324731591043081898
+    second: Pingu_Idle_1
+  - first:
+      213: 2993389982756909795
+    second: Pingu_Idle_2
+  - first:
+      213: -1421301966152401519
+    second: Pingu_Idle_3
+  - first:
+      213: -4891314648753800162
+    second: Pingu_Run_0
+  - first:
+      213: 4938923320479903982
+    second: Pingu_Run_1
+  - first:
+      213: 6787050344954435438
+    second: Pingu_Run_2
+  - first:
+      213: -7637488524108970198
+    second: Pingu_Run_3
+  - first:
+      213: -6527896761957014522
+    second: Pingu_Run_4
+  - first:
+      213: -1161662090756111290
+    second: Pingu_Run_5
+  - first:
+      213: -3533851363163307016
+    second: Pingu_Jump_0
+  - first:
+      213: -3351179554050942253
+    second: Pingu_Jump_1
+  - first:
+      213: -5768984385756769008
+    second: Pingu_Jump_2
+  - first:
+      213: -7089071429282338977
+    second: Pingu_Fall_0
+  - first:
+      213: -3842561120765716365
+    second: Pingu_Fall_1
+  - first:
+      213: -8381719891410044497
+    second: Pingu_Fall_2
+  - first:
+      213: -6948635979086852084
+    second: Pingu_Dash_0
+  - first:
+      213: 769779617312459263
+    second: Pingu_Dash_1
+  - first:
+      213: -3670779126944240623
+    second: Pingu_Dash_2
+  - first:
+      213: 3767264447459285066
+    second: Pingu_Dash_3
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 16
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationMethod: 0
+  spriteTessellationDetail: -1
+  spriteGeometrySubdivision: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Pingu_Idle_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 128
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 923263b34e108abc0800000000000000
+      internalID: -3771762608165215447
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pingu_Idle_1
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 128
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aa66cd20d54626210800000000000000
+      internalID: 1324731591043081898
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pingu_Idle_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 128
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3e230746458aa8920800000000000000
+      internalID: 2993389982756909795
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pingu_Idle_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 128
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 19dfbe46465864ce0800000000000000
+      internalID: -1421301966152401519
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pingu_Run_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 96
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e1c7d540e3f8e1cb0800000000000000
+      internalID: -4891314648753800162
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pingu_Run_1
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 96
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ee0f81aa7949a8440800000000000000
+      internalID: 4938923320479903982
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pingu_Run_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 96
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e6793b35452703e50800000000000000
+      internalID: 6787050344954435438
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pingu_Run_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 96
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a27cc5807a0320690800000000000000
+      internalID: -7637488524108970198
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pingu_Run_4
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 96
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 60421253b704865a0800000000000000
+      internalID: -6527896761957014522
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pingu_Run_5
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 96
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 644c173bb72f0efe0800000000000000
+      internalID: -1161662090756111290
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pingu_Jump_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 64
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8f30f9988ec35fec0800000000000000
+      internalID: -3533851363163307016
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pingu_Jump_1
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 64
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3dadd3e63f73e71d0800000000000000
+      internalID: -3351179554050942253
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pingu_Jump_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 64
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 015513c344370ffa0800000000000000
+      internalID: -5768984385756769008
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pingu_Fall_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 32
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f576146381f8e9d90800000000000000
+      internalID: -7089071429282338977
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pingu_Fall_1
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 32
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3785809f40b7caac0800000000000000
+      internalID: -3842561120765716365
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pingu_Fall_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 32
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fa9bda1ca262eab80800000000000000
+      internalID: -8381719891410044497
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pingu_Dash_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c009709746c719f90800000000000000
+      internalID: -6948635979086852084
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pingu_Dash_1
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ff9ce35cb7eceaa00800000000000000
+      internalID: 769779617312459263
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pingu_Dash_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 11ce19925d5ce0dc0800000000000000
+      internalID: -3670779126944240623
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pingu_Dash_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a48d4cd1e03084430800000000000000
+      internalID: 3767264447459285066
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Pingu_Dash_0: -6948635979086852084
+      Pingu_Dash_1: 769779617312459263
+      Pingu_Dash_2: -3670779126944240623
+      Pingu_Dash_3: 3767264447459285066
+      Pingu_Fall_0: -7089071429282338977
+      Pingu_Fall_1: -3842561120765716365
+      Pingu_Fall_2: -8381719891410044497
+      Pingu_Idle_0: -3771762608165215447
+      Pingu_Idle_1: 1324731591043081898
+      Pingu_Idle_2: 2993389982756909795
+      Pingu_Idle_3: -1421301966152401519
+      Pingu_Jump_0: -3533851363163307016
+      Pingu_Jump_1: -3351179554050942253
+      Pingu_Jump_2: -5768984385756769008
+      Pingu_Run_0: -4891314648753800162
+      Pingu_Run_1: 4938923320479903982
+      Pingu_Run_2: 6787050344954435438
+      Pingu_Run_3: -7637488524108970198
+      Pingu_Run_4: -6527896761957014522
+      Pingu_Run_5: -1161662090756111290
+      Pingu_Spritesheet_0: 622747880993609320
+      Pingu_Spritesheet_1: -300385400740212692
+      Pingu_Spritesheet_10: -2097928051608651758
+      Pingu_Spritesheet_11: 4891481839249989517
+      Pingu_Spritesheet_12: -7481464271931011293
+      Pingu_Spritesheet_13: 4328853086260664486
+      Pingu_Spritesheet_14: 8362198526072678291
+      Pingu_Spritesheet_15: -6518314067083146989
+      Pingu_Spritesheet_16: -4760966225075825997
+      Pingu_Spritesheet_17: 6610608308701011409
+      Pingu_Spritesheet_2: 599029007105340949
+      Pingu_Spritesheet_3: -5229148320936105440
+      Pingu_Spritesheet_4: 7890439072509762252
+      Pingu_Spritesheet_5: 1451336221048750146
+      Pingu_Spritesheet_6: -1782934371102060418
+      Pingu_Spritesheet_7: 5217779435407624997
+      Pingu_Spritesheet_8: -1289802303195666109
+      Pingu_Spritesheet_9: -7448148602325168868
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
