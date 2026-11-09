@@ -909,10 +909,12 @@ namespace Peakingu.Editor
             string[] menuSpritePaths = new string[]
             {
                 "Assets/Sprites/Button_Bg.png",
+                "Assets/Sprites/Button_Menu.png",
                 "Assets/Sprites/Panel_Bg.png",
                 "Assets/Sprites/Slider_Track.png",
                 "Assets/Sprites/Slider_Fill.png",
-                "Assets/Sprites/Menu_Background.png"
+                "Assets/Sprites/Menu_Background.png",
+                "Assets/Sprites/Peakingu_Logo.png"
             };
 
             foreach (var path in menuSpritePaths)
@@ -921,10 +923,36 @@ namespace Peakingu.Editor
                 if (importer != null)
                 {
                     importer.textureType = TextureImporterType.Sprite;
-                    importer.filterMode = FilterMode.Bilinear;
-                    if (path.Contains("Button_Bg")) importer.spriteBorder = new Vector4(8, 8, 8, 8);
-                    if (path.Contains("Panel_Bg")) importer.spriteBorder = new Vector4(12, 12, 12, 12);
-                    if (path.Contains("Slider")) importer.spriteBorder = new Vector4(4, 4, 4, 4);
+                    importer.alphaIsTransparency = true;
+                    if (path.Contains("Button_Menu"))
+                    {
+                        importer.filterMode = FilterMode.Point;
+                        importer.spriteBorder = new Vector4(12, 12, 12, 12);
+                    }
+                    else if (path.Contains("Peakingu_Logo"))
+                    {
+                        importer.filterMode = FilterMode.Point;
+                        importer.spriteBorder = Vector4.zero;
+                    }
+                    else if (path.Contains("Button_Bg"))
+                    {
+                        importer.filterMode = FilterMode.Bilinear;
+                        importer.spriteBorder = new Vector4(8, 8, 8, 8);
+                    }
+                    else if (path.Contains("Panel_Bg"))
+                    {
+                        importer.filterMode = FilterMode.Bilinear;
+                        importer.spriteBorder = new Vector4(12, 12, 12, 12);
+                    }
+                    else if (path.Contains("Slider"))
+                    {
+                        importer.filterMode = FilterMode.Bilinear;
+                        importer.spriteBorder = new Vector4(4, 4, 4, 4);
+                    }
+                    else
+                    {
+                        importer.filterMode = FilterMode.Bilinear;
+                    }
                     importer.textureCompression = TextureImporterCompression.Uncompressed;
                     importer.SaveAndReimport();
                 }
@@ -932,9 +960,11 @@ namespace Peakingu.Editor
             AssetDatabase.Refresh();
 
             var font = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset");
-            var buttonSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/Button_Bg.png");
+            var buttonSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/Button_Menu.png");
+            if (buttonSprite == null) buttonSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/Button_Bg.png");
             var panelSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/Panel_Bg.png");
             var menuBgSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/Menu_Background.png");
+            var logoSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/Peakingu_Logo.png");
             var sliderTrackSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/Slider_Track.png");
             var sliderFillSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/Slider_Fill.png");
 
@@ -965,7 +995,7 @@ namespace Peakingu.Editor
             canvasMenu.AddComponent<GraphicRaycaster>();
             var menuManager = canvasMenu.AddComponent<MenuManager>();
 
-            // 5. Fondo Panorámico Artico
+            // 5. Fondo Panorámico con Pingu y la Montaña (Menu_Background)
             GameObject bgObj = new GameObject("Background_Image");
             bgObj.transform.SetParent(canvasMenu.transform, false);
             var rtBg = bgObj.AddComponent<RectTransform>();
@@ -975,73 +1005,66 @@ namespace Peakingu.Editor
             rtBg.offsetMax = Vector2.zero;
             var imgBg = bgObj.AddComponent<Image>();
             imgBg.sprite = menuBgSprite;
+            imgBg.color = Color.white;
 
-            // 6. Logo y Título "PEAKINGU" (Alineado arriba al centro-izquierda)
+            // 6. Logo y Título "Peakingu" (Arriba del pingüino y sobre la montaña, pixel art celeste)
             GameObject logoObj = new GameObject("Logo_Title");
             logoObj.transform.SetParent(canvasMenu.transform, false);
             var rtLogo = logoObj.AddComponent<RectTransform>();
             rtLogo.anchorMin = new Vector2(0.5f, 0.82f);
             rtLogo.anchorMax = new Vector2(0.5f, 0.82f);
             rtLogo.pivot = new Vector2(0.5f, 0.5f);
-            rtLogo.anchoredPosition = new Vector2(-200f, 0f);
-            rtLogo.sizeDelta = new Vector2(700f, 140f);
+            rtLogo.anchoredPosition = new Vector2(0f, 0f); // Centrado perfectamente sobre el pico de la montaña
+            rtLogo.sizeDelta = new Vector2(680f, 260f);
 
-            var tmpLogo = logoObj.AddComponent<TextMeshProUGUI>();
-            if (font != null) tmpLogo.font = font;
-            tmpLogo.text = "PEAKINGU";
-            tmpLogo.fontSize = 92f;
-            tmpLogo.fontStyle = FontStyles.Bold;
-            tmpLogo.color = new Color(0.12f, 0.85f, 1f);
-            tmpLogo.alignment = TextAlignmentOptions.Center;
+            if (logoSprite != null)
+            {
+                var imgLogo = logoObj.AddComponent<Image>();
+                imgLogo.sprite = logoSprite;
+                imgLogo.preserveAspect = true;
+            }
+            else
+            {
+                var tmpLogo = logoObj.AddComponent<TextMeshProUGUI>();
+                if (font != null) tmpLogo.font = font;
+                tmpLogo.text = "Peakingu";
+                tmpLogo.fontSize = 110f;
+                tmpLogo.fontStyle = FontStyles.Bold;
+                tmpLogo.color = new Color(0.2f, 0.85f, 1f);
+                tmpLogo.alignment = TextAlignmentOptions.Center;
+            }
 
-            GameObject subObj = new GameObject("Sub_Title");
-            subObj.transform.SetParent(logoObj.transform, false);
-            var rtSub = subObj.AddComponent<RectTransform>();
-            rtSub.anchorMin = new Vector2(0.5f, 0f);
-            rtSub.anchorMax = new Vector2(0.5f, 0f);
-            rtSub.pivot = new Vector2(0.5f, 1f);
-            rtSub.anchoredPosition = new Vector2(0f, -8f);
-            rtSub.sizeDelta = new Vector2(600f, 40f);
-
-            var tmpSub = subObj.AddComponent<TextMeshProUGUI>();
-            if (font != null) tmpSub.font = font;
-            tmpSub.text = "¡Sube la montaña antes de que el pescado se queme!";
-            tmpSub.fontSize = 24f;
-            tmpSub.fontStyle = FontStyles.Italic;
-            tmpSub.color = new Color(0.85f, 0.95f, 1f, 0.95f);
-            tmpSub.alignment = TextAlignmentOptions.Center;
-
-            // 7. Panel Principal de Botones (Alineado a la derecha como en el Mockup 1)
+            // 7. Panel Principal de Botones (A la derecha del pingüino, pegado a la pared)
             GameObject mainPanel = new GameObject("MainMenu_Panel");
             mainPanel.transform.SetParent(canvasMenu.transform, false);
             var rtMain = mainPanel.AddComponent<RectTransform>();
-            rtMain.anchorMin = new Vector2(0.5f, 0.5f);
-            rtMain.anchorMax = new Vector2(0.5f, 0.5f);
-            rtMain.pivot = new Vector2(0.5f, 0.5f);
-            rtMain.anchoredPosition = new Vector2(460f, -60f);
-            rtMain.sizeDelta = new Vector2(380f, 420f);
+            rtMain.anchorMin = new Vector2(1f, 0.5f);
+            rtMain.anchorMax = new Vector2(1f, 0.5f);
+            rtMain.pivot = new Vector2(1f, 0.5f);
+            rtMain.anchoredPosition = new Vector2(-60f, -40f); // Pegado a la pared derecha
+            rtMain.sizeDelta = new Vector2(380f, 380f);
 
             var vLayout = mainPanel.AddComponent<VerticalLayoutGroup>();
             vLayout.spacing = 18f;
-            vLayout.childAlignment = TextAnchor.MiddleCenter;
+            vLayout.childAlignment = TextAnchor.MiddleRight;
             vLayout.childControlWidth = false;
             vLayout.childControlHeight = false;
             vLayout.childForceExpandWidth = false;
             vLayout.childForceExpandHeight = false;
 
-            Button btnStart = CreateMenuButton(mainPanel.transform, "Btn_Iniciar", "INICIAR", buttonSprite, font, 340f, 68f, 32f);
+            Button btnStart = CreateMenuButton(mainPanel.transform, "Btn_Iniciar", "INICIAR", buttonSprite, font, 360f, 68f, 30f);
             UnityEditor.Events.UnityEventTools.AddPersistentListener(btnStart.onClick, menuManager.OnStartClicked);
 
-            Button btnLoad = CreateMenuButton(mainPanel.transform, "Btn_Cargar", "CARGAR PARTIDA", buttonSprite, font, 340f, 68f, 26f);
+            Button btnLoad = CreateMenuButton(mainPanel.transform, "Btn_Cargar", "CARGAR", buttonSprite, font, 360f, 68f, 28f);
             UnityEditor.Events.UnityEventTools.AddPersistentListener(btnLoad.onClick, menuManager.OnLoadGameClicked);
 
-            Button btnControls = CreateMenuButton(mainPanel.transform, "Btn_Controles", "CONTROLES", buttonSprite, font, 340f, 68f, 28f);
+            Button btnControls = CreateMenuButton(mainPanel.transform, "Btn_Controles", "CONTROLES", buttonSprite, font, 360f, 68f, 28f);
             UnityEditor.Events.UnityEventTools.AddPersistentListener(btnControls.onClick, menuManager.OnControlsClicked);
 
-            Button btnSettings = CreateMenuButton(mainPanel.transform, "Btn_Configuracion", "CONFIGURACIÓN", buttonSprite, font, 340f, 68f, 26f);
+            Button btnSettings = CreateMenuButton(mainPanel.transform, "Btn_Configuracion", "CONFIGURACIÓN", buttonSprite, font, 360f, 68f, 26f);
             UnityEditor.Events.UnityEventTools.AddPersistentListener(btnSettings.onClick, menuManager.OnSettingsClicked);
 
-            // 8. Panel de Controles
+            // 8. Panel Modal de Controles
             GameObject controlsPanel = new GameObject("Controls_Panel");
             controlsPanel.transform.SetParent(canvasMenu.transform, false);
             var rtCtrl = controlsPanel.AddComponent<RectTransform>();
@@ -1049,11 +1072,12 @@ namespace Peakingu.Editor
             rtCtrl.anchorMax = new Vector2(0.5f, 0.5f);
             rtCtrl.pivot = new Vector2(0.5f, 0.5f);
             rtCtrl.anchoredPosition = Vector2.zero;
-            rtCtrl.sizeDelta = new Vector2(740f, 560f);
+            rtCtrl.sizeDelta = new Vector2(760f, 580f);
 
             var imgCtrl = controlsPanel.AddComponent<Image>();
             imgCtrl.sprite = panelSprite;
             imgCtrl.type = Image.Type.Sliced;
+            imgCtrl.color = new Color(0.9f, 0.95f, 1f, 0.98f);
 
             GameObject ctrlTitleObj = new GameObject("Title_Controles");
             ctrlTitleObj.transform.SetParent(controlsPanel.transform, false);
@@ -1069,7 +1093,7 @@ namespace Peakingu.Editor
             tmpCtrlTitle.text = "CONTROLES";
             tmpCtrlTitle.fontSize = 42f;
             tmpCtrlTitle.fontStyle = FontStyles.Bold;
-            tmpCtrlTitle.color = new Color(0.25f, 0.85f, 1f);
+            tmpCtrlTitle.color = new Color(0.1f, 0.25f, 0.5f);
             tmpCtrlTitle.alignment = TextAlignmentOptions.Center;
 
             GameObject ctrlContentObj = new GameObject("Content_Controles");
@@ -1079,22 +1103,22 @@ namespace Peakingu.Editor
             rtCtrlContent.anchorMax = new Vector2(0.5f, 0.5f);
             rtCtrlContent.pivot = new Vector2(0.5f, 0.5f);
             rtCtrlContent.anchoredPosition = new Vector2(0f, -10f);
-            rtCtrlContent.sizeDelta = new Vector2(640f, 320f);
+            rtCtrlContent.sizeDelta = new Vector2(660f, 340f);
 
             var tmpCtrlContent = ctrlContentObj.AddComponent<TextMeshProUGUI>();
             if (font != null) tmpCtrlContent.font = font;
             tmpCtrlContent.text = "<b>W, A, S, D / Flechas:</b> Moverse horizontalmente\n" +
-                                  "<b>Espacio:</b> Saltar plataformas\n" +
+                                  "<b>Espacio:</b> Saltar plataformas (Doble salto con Jet-Boots)\n" +
                                   "<b>F:</b> Impulso Dash horizontal\n" +
                                   "<b>R:</b> Mano con Gancho Cyborg\n" +
                                   "<b>E:</b> Interactuar con Mercader / Tienda\n" +
-                                  "<b>ESC:</b> Menú de Pausa / Configuración";
+                                  "<b>ESC:</b> Menú / Configuración";
             tmpCtrlContent.fontSize = 25f;
             tmpCtrlContent.lineSpacing = 16f;
-            tmpCtrlContent.color = Color.white;
+            tmpCtrlContent.color = new Color(0.15f, 0.25f, 0.4f);
             tmpCtrlContent.alignment = TextAlignmentOptions.Left;
 
-            Button btnBackCtrl = CreateMenuButton(controlsPanel.transform, "Btn_Volver_Controles", "VOLVER", buttonSprite, font, 240f, 54f, 24f);
+            Button btnBackCtrl = CreateMenuButton(controlsPanel.transform, "Btn_Volver_Controles", "VOLVER", buttonSprite, font, 240f, 56f, 24f);
             var rtBackCtrl = btnBackCtrl.GetComponent<RectTransform>();
             rtBackCtrl.anchorMin = new Vector2(0.5f, 0f);
             rtBackCtrl.anchorMax = new Vector2(0.5f, 0f);
@@ -1104,7 +1128,7 @@ namespace Peakingu.Editor
 
             controlsPanel.SetActive(false);
 
-            // 9. Panel de Configuración
+            // 9. Panel Modal de Configuración (Slider de Volumen)
             GameObject settingsPanel = new GameObject("Settings_Panel");
             settingsPanel.transform.SetParent(canvasMenu.transform, false);
             var rtSet = settingsPanel.AddComponent<RectTransform>();
@@ -1112,11 +1136,12 @@ namespace Peakingu.Editor
             rtSet.anchorMax = new Vector2(0.5f, 0.5f);
             rtSet.pivot = new Vector2(0.5f, 0.5f);
             rtSet.anchoredPosition = Vector2.zero;
-            rtSet.sizeDelta = new Vector2(680f, 460f);
+            rtSet.sizeDelta = new Vector2(700f, 480f);
 
             var imgSet = settingsPanel.AddComponent<Image>();
             imgSet.sprite = panelSprite;
             imgSet.type = Image.Type.Sliced;
+            imgSet.color = new Color(0.9f, 0.95f, 1f, 0.98f);
 
             GameObject setTitleObj = new GameObject("Title_Configuracion");
             setTitleObj.transform.SetParent(settingsPanel.transform, false);
@@ -1132,7 +1157,7 @@ namespace Peakingu.Editor
             tmpSetTitle.text = "CONFIGURACIÓN";
             tmpSetTitle.fontSize = 42f;
             tmpSetTitle.fontStyle = FontStyles.Bold;
-            tmpSetTitle.color = new Color(0.25f, 0.85f, 1f);
+            tmpSetTitle.color = new Color(0.1f, 0.25f, 0.5f);
             tmpSetTitle.alignment = TextAlignmentOptions.Center;
 
             // Etiqueta Volumen
@@ -1150,78 +1175,80 @@ namespace Peakingu.Editor
             tmpVolLabel.text = "Volumen Maestro:";
             tmpVolLabel.fontSize = 26f;
             tmpVolLabel.fontStyle = FontStyles.Bold;
-            tmpVolLabel.color = Color.white;
+            tmpVolLabel.color = new Color(0.15f, 0.25f, 0.4f);
             tmpVolLabel.alignment = TextAlignmentOptions.Left;
 
-            // Texto Porcentaje
-            GameObject volValObj = new GameObject("Text_Porcentaje");
+            // Valor de porcentaje
+            GameObject volValObj = new GameObject("Value_Volumen");
             volValObj.transform.SetParent(settingsPanel.transform, false);
             var rtVolVal = volValObj.AddComponent<RectTransform>();
             rtVolVal.anchorMin = new Vector2(0.5f, 0.65f);
             rtVolVal.anchorMax = new Vector2(0.5f, 0.65f);
             rtVolVal.pivot = new Vector2(0.5f, 0.5f);
             rtVolVal.anchoredPosition = new Vector2(170f, 0f);
-            rtVolVal.sizeDelta = new Vector2(100f, 40f);
+            rtVolVal.sizeDelta = new Vector2(120f, 40f);
 
             var tmpVolVal = volValObj.AddComponent<TextMeshProUGUI>();
             if (font != null) tmpVolVal.font = font;
             tmpVolVal.text = "100%";
             tmpVolVal.fontSize = 26f;
             tmpVolVal.fontStyle = FontStyles.Bold;
-            tmpVolVal.color = new Color(1f, 0.85f, 0.2f);
+            tmpVolVal.color = new Color(0.1f, 0.45f, 0.8f);
             tmpVolVal.alignment = TextAlignmentOptions.Right;
 
             // Slider de Volumen
             GameObject sliderObj = new GameObject("Slider_Volumen");
             sliderObj.transform.SetParent(settingsPanel.transform, false);
             var rtSlider = sliderObj.AddComponent<RectTransform>();
-            rtSlider.anchorMin = new Vector2(0.5f, 0.50f);
-            rtSlider.anchorMax = new Vector2(0.5f, 0.50f);
+            rtSlider.anchorMin = new Vector2(0.5f, 0.45f);
+            rtSlider.anchorMax = new Vector2(0.5f, 0.45f);
             rtSlider.pivot = new Vector2(0.5f, 0.5f);
             rtSlider.anchoredPosition = Vector2.zero;
-            rtSlider.sizeDelta = new Vector2(460f, 28f);
+            rtSlider.sizeDelta = new Vector2(480f, 32f);
 
             var slider = sliderObj.AddComponent<Slider>();
             slider.minValue = 0f;
             slider.maxValue = 1f;
-            slider.value = 1f;
+            slider.wholeNumbers = false;
 
             // Background del slider
-            GameObject sliderBgObj = new GameObject("Background");
-            sliderBgObj.transform.SetParent(sliderObj.transform, false);
-            var rtSBg = sliderBgObj.AddComponent<RectTransform>();
-            rtSBg.anchorMin = Vector2.zero;
-            rtSBg.anchorMax = Vector2.one;
-            rtSBg.offsetMin = Vector2.zero;
-            rtSBg.offsetMax = Vector2.zero;
-            var imgSBg = sliderBgObj.AddComponent<Image>();
-            imgSBg.sprite = sliderTrackSprite;
-            imgSBg.type = Image.Type.Sliced;
+            GameObject sliderBg = new GameObject("Background");
+            sliderBg.transform.SetParent(sliderObj.transform, false);
+            var rtSliderBg = sliderBg.AddComponent<RectTransform>();
+            rtSliderBg.anchorMin = Vector2.zero;
+            rtSliderBg.anchorMax = Vector2.one;
+            rtSliderBg.offsetMin = Vector2.zero;
+            rtSliderBg.offsetMax = Vector2.zero;
+            var imgSliderBg = sliderBg.AddComponent<Image>();
+            imgSliderBg.sprite = sliderTrackSprite;
+            imgSliderBg.type = Image.Type.Sliced;
+            imgSliderBg.color = new Color(0.7f, 0.8f, 0.9f);
 
             // Fill Area
-            GameObject fillAreaObj = new GameObject("Fill Area");
-            fillAreaObj.transform.SetParent(sliderObj.transform, false);
-            var rtFA = fillAreaObj.AddComponent<RectTransform>();
-            rtFA.anchorMin = Vector2.zero;
-            rtFA.anchorMax = Vector2.one;
-            rtFA.offsetMin = new Vector2(4, 0);
-            rtFA.offsetMax = new Vector2(-4, 0);
+            GameObject fillArea = new GameObject("Fill Area");
+            fillArea.transform.SetParent(sliderObj.transform, false);
+            var rtFillArea = fillArea.AddComponent<RectTransform>();
+            rtFillArea.anchorMin = Vector2.zero;
+            rtFillArea.anchorMax = Vector2.one;
+            rtFillArea.offsetMin = new Vector2(4f, 4f);
+            rtFillArea.offsetMax = new Vector2(-4f, -4f);
 
-            GameObject fillObj = new GameObject("Fill");
-            fillObj.transform.SetParent(fillAreaObj.transform, false);
-            var rtFill = fillObj.AddComponent<RectTransform>();
+            GameObject fill = new GameObject("Fill");
+            fill.transform.SetParent(fillArea.transform, false);
+            var rtFill = fill.AddComponent<RectTransform>();
             rtFill.anchorMin = Vector2.zero;
             rtFill.anchorMax = Vector2.one;
             rtFill.offsetMin = Vector2.zero;
             rtFill.offsetMax = Vector2.zero;
-            var imgFill = fillObj.AddComponent<Image>();
+            var imgFill = fill.AddComponent<Image>();
             imgFill.sprite = sliderFillSprite;
             imgFill.type = Image.Type.Sliced;
+            imgFill.color = new Color(0.12f, 0.65f, 0.95f);
 
             slider.targetGraphic = imgFill;
             slider.fillRect = rtFill;
 
-            Button btnBackSet = CreateMenuButton(settingsPanel.transform, "Btn_Volver_Config", "VOLVER", buttonSprite, font, 240f, 54f, 24f);
+            Button btnBackSet = CreateMenuButton(settingsPanel.transform, "Btn_Volver_Config", "VOLVER", buttonSprite, font, 240f, 56f, 24f);
             var rtBackSet = btnBackSet.GetComponent<RectTransform>();
             rtBackSet.anchorMin = new Vector2(0.5f, 0f);
             rtBackSet.anchorMax = new Vector2(0.5f, 0f);
@@ -1262,7 +1289,7 @@ namespace Peakingu.Editor
             EditorSceneManager.SaveScene(scene);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            Debug.Log("[Peakingu] Escena Menu configurada con éxito: Canvas, Botones Iniciar/Cargar/Controles/Settings, Slider de volumen y Transición de fundido.");
+            Debug.Log("[Peakingu] Escena Menu configurada exitosamente con Logo pixel celeste, Botones pegados a la pared derecha (Iniciar/Cargar/Controles/Configuración) y Modales.");
         }
 
         private static Button CreateMenuButton(

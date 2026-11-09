@@ -32,16 +32,17 @@
   - **Contador de Monedas**: icono de moneda y texto `TextMeshProUGUI` sincronizado con `OnCoinsChanged`.
   - **Medidor de Altura**: medidor en tiempo real `HEIGHT: {Y}m` según la posición vertical Y de Pingu respecto al nivel base.
   - **Panel de Game Over**: overlay emergente activado al dispararse `OnGameOver` con mensaje adaptativo si la derrota fue por vidas o por tiempo agotado (pescado quemado).
-- **Escena Menú Principal (`Assets/Scenes/Menu.unity`) y `MenuManager.cs`**:
+- **Escena Menú Principal Fiel al Mockup (`Assets/Scenes/Menu.unity`) y `MenuManager.cs`**:
   - Canvas adaptable con `CanvasScaler` en modo `ScaleWithScreenSize` (1920x1080).
-  - Fondo panorámico gélido estilo cartoon (`Menu_Background.png`).
-  - Logo y título "PEAKINGU" estilizado con TextMeshPro y subtítulo narrativo.
-  - Menú principal alineado a la derecha con 4 botones cartoon:
-    - **INICIAR**: Dispara corrutina de transición con fundido a negro (CanvasGroup con fade alpha de 0 a 1) y carga asíncrona/directa de la escena `Nivel1`.
-    - **CARGAR PARTIDA**: Conectado a `OnLoadGameClicked()` (preparado para futuras versiones, sin función bloqueante).
-    - **CONTROLES**: Abre ventana emergente detallando el esquema de controles del juego (WASD, Espacio, F Dash, R Gancho, E Mercader, ESC Config) con botón Volver.
-    - **CONFIGURACIÓN**: Abre ventana modal con `Slider` interactivo de volumen maestro (`AudioListener.volume`), lectura de porcentaje en tiempo real y persistencia en `PlayerPrefs`.
+  - **Fondo Panorámico Oficial (`Assets/Sprites/Menu_Background.png`)**: Ilustración ártica con la montaña nevada, la cabaña con chimenea humeante y el pingüino cyborg aturdido centrado en la base.
+  - **Título Oficial "Peakingu" (`Assets/Sprites/Peakingu_Logo.png`)**: Logotipo en estilo píxel art celeste con borde azul marino y nieve en la parte superior de las letras, ubicado centrado sobre la cima de la montaña y arriba de Pingu.
+  - **Botonera pegada a la pared derecha (`Assets/Sprites/Button_Menu.png`)**: Botones con marco pixel-art 9-sliced, fondo blanco/hielo y texto azul marino en mayúsculas:
+    - **INICIAR**: Inicia el juego disparando corrutina de transición con fundido a negro (`CanvasGroup.alpha`) y carga directa de la escena `Nivel1`.
+    - **CARGAR**: Botón debajo de Iniciar conectado a `OnLoadGameClicked()` (reservado para futuras versiones, sin función bloqueante).
+    - **CONTROLES**: Abre ventana modal emergente con el detalle completo de comandos (WASD/Flechas movimiento, Espacio salto/doble salto, F Dash, R Gancho, E Mercader, ESC Configuración) y botón Volver.
+    - **CONFIGURACIÓN**: Abre ventana modal con slider interactivo de volumen maestro (`AudioListener.volume`), lectura dinámica de porcentaje y persistencia en `PlayerPrefs`.
   - Transición de fundido a negro en pantalla completa (`Fade_Overlay` con `CanvasGroup` e `Image` negra).
+  - Escena inicial configurada en el índice 0 de los Build Settings.
 - **Sprites Pixel Art Creados**:
   - `Assets/Sprites/Heart_Full.png`
   - `Assets/Sprites/Heart_Empty.png`
