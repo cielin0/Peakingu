@@ -81,6 +81,25 @@
   - Desbloqueo inmediato en `PlayerStats`, desactivación permanente del botón de compra y cambio de etiqueta a `"COMPRADO"`.
   - Bloqueo total del movimiento del jugador (`player.SetMovementLocked(true)`) mientras la tienda permanece abierta y desbloqueo al cerrarla (`CloseShop()`).
   - Sin inventario: el efecto es inmediato y permanente en las estadísticas del personaje.
+- **Menú de Pausa, Game Over y Pantalla de Victoria (`PauseManager` & `VictoryTrigger`)**:
+  - **Menú de Pausa (tecla ESC / Start)**:
+    - Alternancia inteligente con tecla ESC: si la tienda del mercader está abierta, ESC la cierra sin activar la pausa accidentalmente.
+    - Pausa total de la simulación (`Time.timeScale = 0f`) y bloqueo del movimiento del jugador.
+    - Botón **Reanudar**: devuelve `Time.timeScale = 1f`, oculta la pausa y desbloquea el movimiento de Pingu.
+    - Botón **Configuración**: abre subpanel con slider de volumen maestro (guardado sincronizado con `PlayerPrefs` y `AudioListener.volume`), porcentaje dinámico y botón Volver.
+    - Botón **Volver al Menú**: restaura `Time.timeScale = 1f`, reinicia el estado y carga la escena `"Menu"`.
+  - **Pantalla de Game Over (escuchando `GameManager.OnGameOver`)**:
+    - Se activa automáticamente al agotarse las vidas o expirar el temporizador del horno.
+    - Pausa la física (`Time.timeScale = 0f`) y muestra la razón de derrota de forma dinámica.
+    - Botón **Reiniciar**: restaura `Time.timeScale = 1f`, ejecuta `GameManager.Instance.ResetGame()` y recarga la escena activa sin romper el temporizador.
+    - Botón **Volver al Menú**: restaura `Time.timeScale = 1f` y regresa al menú principal.
+  - **Pantalla de Victoria (escuchando `GameManager.OnVictory` y `VictoryTrigger`)**:
+    - Disparada al alcanzar la cumbre de la montaña (Plataforma E) o la meta del nivel (Plataforma H) mediante componentes `VictoryTrigger`.
+    - Muestra mensaje de éxito ("¡CUMBRE ALCANZADA! El pescado en el horno está a salvo") junto con las estadísticas de la partida (tiempo restante y monedas recolectadas).
+    - Botones **Jugar de Nuevo** (Reiniciar) y **Volver al Menú**.
+  - **Protección de `Time.timeScale` frente al temporizador**:
+    - El temporizador regresivo descuenta mediante `currentTimeRemaining -= Time.deltaTime`. Durante la pausa (`timeScale = 0f`), `Time.deltaTime` es `0`, por lo que el tiempo no corre en pausa.
+    - Al reanudar, reiniciar o salir al menú, `Time.timeScale` se garantiza en `1f` en múltiples capas de seguridad (`PauseManager.ResumeGame()`, `RestartGame()`, `QuitToMainMenu()`, `OnDisable()`, `OnDestroy()` y `GameManager.OnSceneLoaded()`), previniendo el bug clásico de Unity donde recargar escenas con `timeScale = 0` congela el temporizador para siempre.
 - **Prefabs generados**:
   - `Assets/Prefabs/Pingu.prefab`
   - `Assets/Prefabs/GameManager.prefab` (con `PlayerStats` integrado)

@@ -37,6 +37,7 @@ namespace Peakingu
         public static event Action<float> OnTimerTick;
         public static event Action OnTimerExpired;
         public static event Action OnGameOver;
+        public static event Action OnVictory;
         public static event Action<Vector3> OnPlayerRespawned;
 
         public int CurrentLives => currentLives;
@@ -109,7 +110,23 @@ namespace Peakingu
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
+            Time.timeScale = 1f; // Restaurar siempre la escala de tiempo para no romper la física ni el timer
             FindPlayerAndRegisterSpawn();
+            if (scene.name == "Menu")
+            {
+                timerIsRunning = false;
+            }
+            else
+            {
+                if (currentLives <= 0 || currentTimeRemaining <= 0f)
+                {
+                    ResetGame();
+                }
+                else
+                {
+                    timerIsRunning = true;
+                }
+            }
         }
 
         private void FindPlayerAndRegisterSpawn()
@@ -239,6 +256,13 @@ namespace Peakingu
             OnGameOver?.Invoke();
         }
 
+        public void TriggerVictory()
+        {
+            timerIsRunning = false;
+            Debug.Log("[GameManager] ¡VICTORIA! Condición de victoria alcanzada.");
+            OnVictory?.Invoke();
+        }
+
         public void ResetLives()
         {
             currentLives = maxLives;
@@ -247,6 +271,7 @@ namespace Peakingu
 
         public void ResetGame()
         {
+            Time.timeScale = 1f; // Garantizar escala normal de tiempo
             hasCheckpoint = false;
             ResetLives();
             ResetCoins();

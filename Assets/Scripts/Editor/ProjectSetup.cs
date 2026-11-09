@@ -594,241 +594,7 @@ namespace Peakingu.Editor
         public static void BuildHUDPrefab()
         {
             ConfigureUISprites();
-
-            var font = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset");
-            var heartFull = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/Heart_Full.png");
-            var heartEmpty = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/Heart_Empty.png");
-            var coinSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/Coin.png");
-            var heightSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/Height_Icon.png");
-
-            var existingHUD = GameObject.Find("HUD");
-            if (existingHUD != null) DestroyImmediate(existingHUD);
-
-            // 1. Root Canvas
-            GameObject hudCanvas = new GameObject("HUD");
-            var canvas = hudCanvas.AddComponent<Canvas>();
-            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-
-            var scaler = hudCanvas.AddComponent<CanvasScaler>();
-            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution = new Vector2(1920, 1080);
-            scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
-            scaler.matchWidthOrHeight = 0.5f;
-
-            hudCanvas.AddComponent<GraphicRaycaster>();
-            var hudManager = hudCanvas.AddComponent<HUDManager>();
-
-            // 2. Contenedor Superior Izquierdo: Vidas y Temporizador
-            GameObject topLeft = new GameObject("TopLeft_Group");
-            topLeft.transform.SetParent(hudCanvas.transform, false);
-            var rtTL = topLeft.AddComponent<RectTransform>();
-            rtTL.anchorMin = new Vector2(0f, 1f);
-            rtTL.anchorMax = new Vector2(0f, 1f);
-            rtTL.pivot = new Vector2(0f, 1f);
-            rtTL.anchoredPosition = new Vector2(35f, -30f);
-            rtTL.sizeDelta = new Vector2(600f, 60f);
-
-            // Corazones
-            GameObject heartsParent = new GameObject("Hearts_Container");
-            heartsParent.transform.SetParent(topLeft.transform, false);
-            var rtHearts = heartsParent.AddComponent<RectTransform>();
-            rtHearts.anchorMin = new Vector2(0f, 0.5f);
-            rtHearts.anchorMax = new Vector2(0f, 0.5f);
-            rtHearts.pivot = new Vector2(0f, 0.5f);
-            rtHearts.anchoredPosition = new Vector2(0f, 0f);
-            rtHearts.sizeDelta = new Vector2(230f, 44f);
-
-            var hLayout = heartsParent.AddComponent<HorizontalLayoutGroup>();
-            hLayout.spacing = 8f;
-            hLayout.childAlignment = TextAnchor.MiddleLeft;
-            hLayout.childControlWidth = false;
-            hLayout.childControlHeight = false;
-            hLayout.childForceExpandWidth = false;
-            hLayout.childForceExpandHeight = false;
-
-            List<Image> heartImages = new List<Image>();
-            for (int i = 0; i < 5; i++)
-            {
-                GameObject heartObj = new GameObject($"Heart_{i + 1}");
-                heartObj.transform.SetParent(heartsParent.transform, false);
-                var img = heartObj.AddComponent<Image>();
-                img.sprite = heartFull;
-                img.preserveAspect = true;
-                var rtH = heartObj.GetComponent<RectTransform>();
-                rtH.sizeDelta = new Vector2(38f, 38f);
-                heartImages.Add(img);
-            }
-
-            // Temporizador
-            GameObject timerObj = new GameObject("Timer_Text");
-            timerObj.transform.SetParent(topLeft.transform, false);
-            var rtTimer = timerObj.AddComponent<RectTransform>();
-            rtTimer.anchorMin = new Vector2(0f, 0.5f);
-            rtTimer.anchorMax = new Vector2(0f, 0.5f);
-            rtTimer.pivot = new Vector2(0f, 0.5f);
-            rtTimer.anchoredPosition = new Vector2(245f, 0f);
-            rtTimer.sizeDelta = new Vector2(260f, 48f);
-
-            var tmpTimer = timerObj.AddComponent<TextMeshProUGUI>();
-            if (font != null) tmpTimer.font = font;
-            tmpTimer.fontSize = 32f;
-            tmpTimer.fontStyle = FontStyles.Bold;
-            tmpTimer.color = Color.white;
-            tmpTimer.text = "TIME: 20:00";
-            tmpTimer.alignment = TextAlignmentOptions.MidlineLeft;
-
-            // 3. Contenedor Superior Derecho: Monedas y Altura
-            GameObject topRight = new GameObject("TopRight_Group");
-            topRight.transform.SetParent(hudCanvas.transform, false);
-            var rtTR = topRight.AddComponent<RectTransform>();
-            rtTR.anchorMin = new Vector2(1f, 1f);
-            rtTR.anchorMax = new Vector2(1f, 1f);
-            rtTR.pivot = new Vector2(1f, 1f);
-            rtTR.anchoredPosition = new Vector2(-35f, -30f);
-            rtTR.sizeDelta = new Vector2(320f, 110f);
-
-            // Monedas
-            GameObject coinsObj = new GameObject("Coins_Group");
-            coinsObj.transform.SetParent(topRight.transform, false);
-            var rtCoins = coinsObj.AddComponent<RectTransform>();
-            rtCoins.anchorMin = new Vector2(1f, 1f);
-            rtCoins.anchorMax = new Vector2(1f, 1f);
-            rtCoins.pivot = new Vector2(1f, 1f);
-            rtCoins.anchoredPosition = new Vector2(0f, 0f);
-            rtCoins.sizeDelta = new Vector2(180f, 44f);
-
-            GameObject coinIconObj = new GameObject("Coin_Icon");
-            coinIconObj.transform.SetParent(coinsObj.transform, false);
-            var imgCoin = coinIconObj.AddComponent<Image>();
-            imgCoin.sprite = coinSprite;
-            imgCoin.preserveAspect = true;
-            var rtCI = coinIconObj.GetComponent<RectTransform>();
-            rtCI.anchorMin = new Vector2(0f, 0.5f);
-            rtCI.anchorMax = new Vector2(0f, 0.5f);
-            rtCI.pivot = new Vector2(0f, 0.5f);
-            rtCI.anchoredPosition = new Vector2(0f, 0f);
-            rtCI.sizeDelta = new Vector2(36f, 36f);
-
-            GameObject coinTextObj = new GameObject("Coins_Text");
-            coinTextObj.transform.SetParent(coinsObj.transform, false);
-            var rtCT = coinTextObj.AddComponent<RectTransform>();
-            rtCT.anchorMin = new Vector2(0f, 0.5f);
-            rtCT.anchorMax = new Vector2(1f, 0.5f);
-            rtCT.pivot = new Vector2(0f, 0.5f);
-            rtCT.anchoredPosition = new Vector2(44f, 0f);
-            rtCT.sizeDelta = new Vector2(120f, 40f);
-
-            var tmpCoins = coinTextObj.AddComponent<TextMeshProUGUI>();
-            if (font != null) tmpCoins.font = font;
-            tmpCoins.fontSize = 32f;
-            tmpCoins.fontStyle = FontStyles.Bold;
-            tmpCoins.color = new Color(1f, 0.85f, 0.2f);
-            tmpCoins.text = "x 0";
-            tmpCoins.alignment = TextAlignmentOptions.MidlineLeft;
-
-            // Altura
-            GameObject heightObj = new GameObject("Height_Group");
-            heightObj.transform.SetParent(topRight.transform, false);
-            var rtHGroup = heightObj.AddComponent<RectTransform>();
-            rtHGroup.anchorMin = new Vector2(1f, 1f);
-            rtHGroup.anchorMax = new Vector2(1f, 1f);
-            rtHGroup.pivot = new Vector2(1f, 1f);
-            rtHGroup.anchoredPosition = new Vector2(0f, -48f);
-            rtHGroup.sizeDelta = new Vector2(250f, 44f);
-
-            GameObject heightTextObj = new GameObject("Height_Text");
-            heightTextObj.transform.SetParent(heightObj.transform, false);
-            var rtHT = heightTextObj.AddComponent<RectTransform>();
-            rtHT.anchorMin = new Vector2(0f, 0.5f);
-            rtHT.anchorMax = new Vector2(1f, 0.5f);
-            rtHT.pivot = new Vector2(0f, 0.5f);
-            rtHT.anchoredPosition = new Vector2(0f, 0f);
-            rtHT.sizeDelta = new Vector2(200f, 40f);
-
-            var tmpHeight = heightTextObj.AddComponent<TextMeshProUGUI>();
-            if (font != null) tmpHeight.font = font;
-            tmpHeight.fontSize = 28f;
-            tmpHeight.fontStyle = FontStyles.Bold;
-            tmpHeight.color = Color.white;
-            tmpHeight.text = "HEIGHT: 0m";
-            tmpHeight.alignment = TextAlignmentOptions.MidlineRight;
-
-            GameObject heightIconObj = new GameObject("Height_Icon");
-            heightIconObj.transform.SetParent(heightObj.transform, false);
-            var imgHeight = heightIconObj.AddComponent<Image>();
-            imgHeight.sprite = heightSprite;
-            imgHeight.preserveAspect = true;
-            var rtHI = heightIconObj.GetComponent<RectTransform>();
-            rtHI.anchorMin = new Vector2(1f, 0.5f);
-            rtHI.anchorMax = new Vector2(1f, 0.5f);
-            rtHI.pivot = new Vector2(1f, 0.5f);
-            rtHI.anchoredPosition = new Vector2(0f, 0f);
-            rtHI.sizeDelta = new Vector2(36f, 36f);
-
-            // 4. Panel de Game Over
-            GameObject goPanel = new GameObject("GameOver_Panel");
-            goPanel.transform.SetParent(hudCanvas.transform, false);
-            var rtGOPanel = goPanel.AddComponent<RectTransform>();
-            rtGOPanel.anchorMin = Vector2.zero;
-            rtGOPanel.anchorMax = Vector2.one;
-            rtGOPanel.offsetMin = Vector2.zero;
-            rtGOPanel.offsetMax = Vector2.zero;
-
-            var imgGOPanel = goPanel.AddComponent<Image>();
-            imgGOPanel.color = new Color(0.05f, 0.05f, 0.1f, 0.85f);
-
-            GameObject goTitleObj = new GameObject("GameOver_Title");
-            goTitleObj.transform.SetParent(goPanel.transform, false);
-            var rtGOTitle = goTitleObj.AddComponent<RectTransform>();
-            rtGOTitle.anchorMin = new Vector2(0.5f, 0.6f);
-            rtGOTitle.anchorMax = new Vector2(0.5f, 0.6f);
-            rtGOTitle.pivot = new Vector2(0.5f, 0.5f);
-            rtGOTitle.sizeDelta = new Vector2(600f, 100f);
-
-            var tmpGOTitle = goTitleObj.AddComponent<TextMeshProUGUI>();
-            if (font != null) tmpGOTitle.font = font;
-            tmpGOTitle.fontSize = 64f;
-            tmpGOTitle.fontStyle = FontStyles.Bold;
-            tmpGOTitle.color = new Color(1f, 0.25f, 0.25f);
-            tmpGOTitle.text = "GAME OVER";
-            tmpGOTitle.alignment = TextAlignmentOptions.Center;
-
-            GameObject goReasonObj = new GameObject("GameOver_Reason");
-            goReasonObj.transform.SetParent(goPanel.transform, false);
-            var rtGOReason = goReasonObj.AddComponent<RectTransform>();
-            rtGOReason.anchorMin = new Vector2(0.5f, 0.45f);
-            rtGOReason.anchorMax = new Vector2(0.5f, 0.45f);
-            rtGOReason.pivot = new Vector2(0.5f, 0.5f);
-            rtGOReason.sizeDelta = new Vector2(800f, 80f);
-
-            var tmpGOReason = goReasonObj.AddComponent<TextMeshProUGUI>();
-            if (font != null) tmpGOReason.font = font;
-            tmpGOReason.fontSize = 28f;
-            tmpGOReason.color = Color.white;
-            tmpGOReason.text = "¡El tiempo se ha agotado!\nEl pescado en el horno se ha quemado.";
-            tmpGOReason.alignment = TextAlignmentOptions.Center;
-
-            goPanel.SetActive(false);
-
-            // 5. Enlazar referencias en HUDManager
-            hudManager.Configure(
-                heartsParent.transform,
-                heartImages,
-                heartFull,
-                heartEmpty,
-                tmpCoins,
-                tmpTimer,
-                tmpHeight,
-                goPanel,
-                tmpGOReason,
-                baseHeight: -1f
-            );
-
-            PrefabUtility.SaveAsPrefabAsset(hudCanvas, "Assets/Prefabs/HUD.prefab");
-            DestroyImmediate(hudCanvas);
-
-            AssetDatabase.SaveAssets();
-            Debug.Log("[Peakingu] Prefab HUD armado exitosamente en Assets/Prefabs/HUD.prefab.");
+            Peakingu.EditorTools.PauseAndGameOverBuilder.BuildHUDWithPauseGameOverVictory();
         }
 
         [MenuItem("Tools/Peakingu/9. Integrar HUD y Monedas en Nivel 1")]
@@ -983,6 +749,40 @@ namespace Peakingu.Editor
                 kzCol.isTrigger = true;
                 kzCol.size = new Vector2(160f, 2f);
                 kzObj.AddComponent<KillZone>();
+            }
+
+            // Asegurar Metas de Victoria (Summit y End)
+            var heightSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/Height_Icon.png");
+            var existingGoal1 = GameObject.Find("Victory_Goal_Summit");
+            if (existingGoal1 == null)
+            {
+                GameObject goalSummit = new GameObject("Victory_Goal_Summit");
+                goalSummit.transform.position = new Vector3(24.5f, 10.5f, 0f);
+                var srSummit = goalSummit.AddComponent<SpriteRenderer>();
+                srSummit.sprite = heightSprite;
+                srSummit.color = new Color(1f, 0.85f, 0.2f);
+                srSummit.sortingLayerName = "Collectibles";
+                goalSummit.transform.localScale = new Vector3(1.4f, 1.4f, 1f);
+                var colSummit = goalSummit.AddComponent<BoxCollider2D>();
+                colSummit.isTrigger = true;
+                colSummit.size = new Vector2(2.5f, 2.5f);
+                goalSummit.AddComponent<VictoryTrigger>();
+            }
+
+            var existingGoal2 = GameObject.Find("Victory_Goal_End");
+            if (existingGoal2 == null)
+            {
+                GameObject goalEnd = new GameObject("Victory_Goal_End");
+                goalEnd.transform.position = new Vector3(47f, 1.5f, 0f);
+                var srEnd = goalEnd.AddComponent<SpriteRenderer>();
+                srEnd.sprite = heightSprite;
+                srEnd.color = new Color(0.36f, 0.88f, 0.90f);
+                srEnd.sortingLayerName = "Collectibles";
+                goalEnd.transform.localScale = new Vector3(1.4f, 1.4f, 1f);
+                var colEnd = goalEnd.AddComponent<BoxCollider2D>();
+                colEnd.isTrigger = true;
+                colEnd.size = new Vector2(2.5f, 2.5f);
+                goalEnd.AddComponent<VictoryTrigger>();
             }
 
             EditorSceneManager.SaveScene(scene);
