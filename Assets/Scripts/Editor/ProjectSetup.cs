@@ -1325,7 +1325,246 @@ namespace Peakingu.Editor
             BuildHUDPrefab();
             SetupLevel1HUDAndCoins();
             SetupMenuScene();
+            SetupMerchantAndShop();
             Debug.Log("[Peakingu] ¡Pipeline completo de Peakingu ejecutado con éxito total!");
+        }
+
+        [MenuItem("Tools/Peakingu/13. Configurar NPC Mercader y Tienda (ShopManager)")]
+        public static void SetupMerchantAndShop()
+        {
+            var scene = EditorSceneManager.OpenScene("Assets/Scenes/Nivel1.unity", OpenSceneMode.Single);
+
+            var font = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset");
+            var buttonBg = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/Button_Bg.png");
+            var panelBg = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/Panel_Bg.png");
+
+            // 1. Asegurar que GameManager tenga PlayerStats
+            var gmObj = GameObject.Find("GameManager");
+            if (gmObj != null)
+            {
+                if (gmObj.GetComponent<PlayerStats>() == null)
+                {
+                    gmObj.AddComponent<PlayerStats>();
+                }
+            }
+
+            var gmPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/GameManager.prefab");
+            if (gmPrefab != null && gmPrefab.GetComponent<PlayerStats>() == null)
+            {
+                gmPrefab.AddComponent<PlayerStats>();
+                EditorUtility.SetDirty(gmPrefab);
+            }
+
+            // 2. Crear / Actualizar Canvas de la Tienda
+            var existingShopCanvas = GameObject.Find("Canvas_Shop");
+            if (existingShopCanvas != null) DestroyImmediate(existingShopCanvas);
+
+            GameObject shopCanvasObj = new GameObject("Canvas_Shop");
+            var shopCanvas = shopCanvasObj.AddComponent<Canvas>();
+            shopCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            shopCanvas.sortingOrder = 50;
+
+            var scaler = shopCanvasObj.AddComponent<CanvasScaler>();
+            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            scaler.referenceResolution = new Vector2(1920, 1080);
+            scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
+            scaler.matchWidthOrHeight = 0.5f;
+
+            shopCanvasObj.AddComponent<GraphicRaycaster>();
+            var shopManager = shopCanvasObj.AddComponent<ShopManager>();
+
+            // Panel Modal Centrado
+            GameObject shopPanel = new GameObject("Shop_Panel");
+            shopPanel.transform.SetParent(shopCanvasObj.transform, false);
+            var rtShopPanel = shopPanel.AddComponent<RectTransform>();
+            rtShopPanel.anchorMin = new Vector2(0.5f, 0.5f);
+            rtShopPanel.anchorMax = new Vector2(0.5f, 0.5f);
+            rtShopPanel.pivot = new Vector2(0.5f, 0.5f);
+            rtShopPanel.anchoredPosition = Vector2.zero;
+            rtShopPanel.sizeDelta = new Vector2(900f, 720f);
+
+            var imgPanel = shopPanel.AddComponent<Image>();
+            imgPanel.sprite = panelBg;
+            imgPanel.type = Image.Type.Sliced;
+            imgPanel.color = new Color(0.9f, 0.95f, 1f, 0.98f);
+
+            // Titulo
+            GameObject titleObj = new GameObject("Title_Shop");
+            titleObj.transform.SetParent(shopPanel.transform, false);
+            var rtTitle = titleObj.AddComponent<RectTransform>();
+            rtTitle.anchorMin = new Vector2(0.5f, 1f);
+            rtTitle.anchorMax = new Vector2(0.5f, 1f);
+            rtTitle.pivot = new Vector2(0.5f, 1f);
+            rtTitle.anchoredPosition = new Vector2(0f, -30f);
+            rtTitle.sizeDelta = new Vector2(800f, 60f);
+
+            var tmpTitle = titleObj.AddComponent<TextMeshProUGUI>();
+            if (font != null) tmpTitle.font = font;
+            tmpTitle.text = "TIENDA DEL MERCADER CYBORG";
+            tmpTitle.fontSize = 38f;
+            tmpTitle.fontStyle = FontStyles.Bold;
+            tmpTitle.color = new Color(0.25f, 0.85f, 1f);
+            tmpTitle.alignment = TextAlignmentOptions.Center;
+
+            // Balance
+            GameObject balanceObj = new GameObject("Balance_Monedas");
+            balanceObj.transform.SetParent(shopPanel.transform, false);
+            var rtBalance = balanceObj.AddComponent<RectTransform>();
+            rtBalance.anchorMin = new Vector2(0.5f, 1f);
+            rtBalance.anchorMax = new Vector2(0.5f, 1f);
+            rtBalance.pivot = new Vector2(0.5f, 1f);
+            rtBalance.anchoredPosition = new Vector2(0f, -90f);
+            rtBalance.sizeDelta = new Vector2(600f, 40f);
+
+            var tmpBalance = balanceObj.AddComponent<TextMeshProUGUI>();
+            if (font != null) tmpBalance.font = font;
+            tmpBalance.text = "Monedas: 0";
+            tmpBalance.fontSize = 28f;
+            tmpBalance.fontStyle = FontStyles.Bold;
+            tmpBalance.color = new Color(1f, 0.85f, 0.2f);
+            tmpBalance.alignment = TextAlignmentOptions.Center;
+
+            // Items Container
+            GameObject itemsContainer = new GameObject("Items_Container");
+            itemsContainer.transform.SetParent(shopPanel.transform, false);
+            var rtItems = itemsContainer.AddComponent<RectTransform>();
+            rtItems.anchorMin = new Vector2(0.5f, 0.5f);
+            rtItems.anchorMax = new Vector2(0.5f, 0.5f);
+            rtItems.pivot = new Vector2(0.5f, 0.5f);
+            rtItems.anchoredPosition = new Vector2(0f, -20f);
+            rtItems.sizeDelta = new Vector2(820f, 440f);
+
+            var vLayout = itemsContainer.AddComponent<VerticalLayoutGroup>();
+            vLayout.spacing = 16f;
+            vLayout.childAlignment = TextAnchor.MiddleCenter;
+            vLayout.childControlWidth = false;
+            vLayout.childControlHeight = false;
+            vLayout.childForceExpandWidth = false;
+            vLayout.childForceExpandHeight = false;
+
+            // 1. Gancho (30)
+            var (btnHook, txtHook) = CreateShopItemRow(
+                itemsContainer.transform, "Item_Gancho", "Mano con Gancho Cyborg",
+                "Permite anclarse y escalar abismos con gancho mecánico.", 30, buttonBg, font
+            );
+            UnityEditor.Events.UnityEventTools.AddPersistentListener(btnHook.onClick, shopManager.BuyGrapplingHook);
+
+            // 2. Jet-Boots (20)
+            var (btnBoots, txtBoots) = CreateShopItemRow(
+                itemsContainer.transform, "Item_JetBoots", "Propulsores de Salto (Jet-Boots)",
+                "Incrementa la altura del salto y otorga Doble Salto en el aire.", 20, buttonBg, font
+            );
+            UnityEditor.Events.UnityEventTools.AddPersistentListener(btnBoots.onClick, shopManager.BuyJetBoots);
+
+            // 3. Guantes (15)
+            var (btnGloves, txtGloves) = CreateShopItemRow(
+                itemsContainer.transform, "Item_Guantes", "Guantes Antideslizantes",
+                "Reduce el derrape en superficies heladas otorgando frenado preciso.", 15, buttonBg, font
+            );
+            UnityEditor.Events.UnityEventTools.AddPersistentListener(btnGloves.onClick, shopManager.BuyAntiSlipGloves);
+
+            // 4. Hidrodash (25)
+            var (btnDash, txtDash) = CreateShopItemRow(
+                itemsContainer.transform, "Item_Hidrodash", "Módulo de Dash Mejorado (Hidrodash)",
+                "Acorta el tiempo de cooldown a 0.5s y aumenta la distancia del dash.", 25, buttonBg, font
+            );
+            UnityEditor.Events.UnityEventTools.AddPersistentListener(btnDash.onClick, shopManager.BuyHydrodash);
+
+            // Boton Cerrar
+            Button btnClose = CreateMenuButton(shopPanel.transform, "Btn_Cerrar_Tienda", "CERRAR TIENDA [ESC]", buttonBg, font, 300f, 55f, 22f);
+            var rtClose = btnClose.GetComponent<RectTransform>();
+            rtClose.anchorMin = new Vector2(0.5f, 0f);
+            rtClose.anchorMax = new Vector2(0.5f, 0f);
+            rtClose.pivot = new Vector2(0.5f, 0f);
+            rtClose.anchoredPosition = new Vector2(0f, 30f);
+            UnityEditor.Events.UnityEventTools.AddPersistentListener(btnClose.onClick, shopManager.CloseShop);
+
+            shopManager.SetupInEditor(shopPanel, tmpBalance, btnHook, txtHook, btnBoots, txtBoots, btnGloves, txtGloves, btnDash, txtDash, btnClose);
+            shopPanel.SetActive(false);
+
+            // 3. Crear / Configurar NPC Mercader en Nivel 1
+            var existingNPC = GameObject.Find("Merchant_NPC");
+            if (existingNPC != null) DestroyImmediate(existingNPC);
+
+            GameObject npcObj = new GameObject("Merchant_NPC");
+            npcObj.transform.position = new Vector3(12f, 3.8f, 0f);
+            npcObj.tag = "Merchant";
+            int merchantLayer = LayerMask.NameToLayer("Merchant");
+            if (merchantLayer != -1) npcObj.layer = merchantLayer;
+
+            var col = npcObj.AddComponent<BoxCollider2D>();
+            col.isTrigger = true;
+            col.size = new Vector2(3.5f, 3.5f);
+
+            var merchantComp = npcObj.AddComponent<MerchantNPC>();
+
+            // Cartel flotante "Presiona E"
+            GameObject promptObj = new GameObject("Interact_Prompt");
+            promptObj.transform.SetParent(npcObj.transform, false);
+            promptObj.transform.localPosition = new Vector3(0f, 2.2f, 0f);
+
+            var tmpPrompt = promptObj.AddComponent<TextMeshPro>();
+            if (font != null) tmpPrompt.font = font;
+            tmpPrompt.text = "Presiona [E]";
+            tmpPrompt.fontSize = 5.5f;
+            tmpPrompt.fontStyle = FontStyles.Bold;
+            tmpPrompt.color = new Color(0.1f, 0.95f, 1f);
+            tmpPrompt.alignment = TextAlignmentOptions.Center;
+            tmpPrompt.sortingLayerID = SortingLayer.NameToID("Foreground");
+            tmpPrompt.sortingOrder = 10;
+
+            merchantComp.SetupInEditor(promptObj, tmpPrompt);
+            promptObj.SetActive(false);
+
+            EditorSceneManager.SaveScene(scene);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            Debug.Log("[Peakingu] NPC Mercader ('Presiona E'), ShopManager y PlayerStats configurados exitosamente en Nivel 1.");
+        }
+
+        private static (Button btn, TextMeshProUGUI txt) CreateShopItemRow(
+            Transform parent,
+            string rowName,
+            string itemName,
+            string description,
+            int cost,
+            Sprite btnSprite,
+            TMP_FontAsset font)
+        {
+            GameObject rowObj = new GameObject(rowName);
+            rowObj.transform.SetParent(parent, false);
+
+            var rtRow = rowObj.AddComponent<RectTransform>();
+            rtRow.sizeDelta = new Vector2(800f, 85f);
+
+            var imgRow = rowObj.AddComponent<Image>();
+            imgRow.color = new Color(0.1f, 0.18f, 0.3f, 0.5f);
+
+            GameObject infoObj = new GameObject("Info");
+            infoObj.transform.SetParent(rowObj.transform, false);
+            var rtInfo = infoObj.AddComponent<RectTransform>();
+            rtInfo.anchorMin = new Vector2(0f, 0.5f);
+            rtInfo.anchorMax = new Vector2(0.68f, 0.5f);
+            rtInfo.pivot = new Vector2(0f, 0.5f);
+            rtInfo.anchoredPosition = new Vector2(20f, 0f);
+            rtInfo.sizeDelta = new Vector2(0f, 75f);
+
+            var tmpInfo = infoObj.AddComponent<TextMeshProUGUI>();
+            if (font != null) tmpInfo.font = font;
+            tmpInfo.text = $"<b>{itemName}</b>\n<size=18><color=#b0c8dc>{description}</color></size>";
+            tmpInfo.fontSize = 22f;
+            tmpInfo.color = Color.white;
+            tmpInfo.alignment = TextAlignmentOptions.MidlineLeft;
+
+            Button btn = CreateMenuButton(rowObj.transform, "Btn_Buy", $"{cost} Monedas", btnSprite, font, 220f, 52f, 20f);
+            var rtBtn = btn.GetComponent<RectTransform>();
+            rtBtn.anchorMin = new Vector2(1f, 0.5f);
+            rtBtn.anchorMax = new Vector2(1f, 0.5f);
+            rtBtn.pivot = new Vector2(1f, 0.5f);
+            rtBtn.anchoredPosition = new Vector2(-15f, 0f);
+
+            var txtBtn = btn.GetComponentInChildren<TextMeshProUGUI>();
+            return (btn, txtBtn);
         }
     }
 }

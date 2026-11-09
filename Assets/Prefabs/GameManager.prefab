@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7162442222313693564}
   - component: {fileID: 4123351189423638863}
+  - component: {fileID: -6146117216539164960}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -46,4 +47,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Peakingu.GameManager
   maxLives: 5
   currentLives: 5
+  currentCoins: 0
+  initialTimeInSeconds: 1200
+  timerIsRunning: 1
+  currentTimeRemaining: 0
   spawnPosition: {x: -8, y: -1, z: 0}
+--- !u!114 &-6146117216539164960
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6851349636867831449}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f79ed78447466e44a1f46bf13812e63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Peakingu.PlayerStats
+  hasGrapplingHook: 0
+  hasJetBoots: 0
+  hasAntiSlipGloves: 0
+  hasHydrodash: 0

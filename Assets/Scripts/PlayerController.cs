@@ -60,6 +60,7 @@ namespace Peakingu
         // Propiedades públicas de estado
         public bool IsDashing => isDashing;
         public bool IsFacingRight => isFacingRight;
+        public bool IsMovementLocked => isMovementLocked;
 
         // Referencias internas
         private Rigidbody2D rb;
@@ -73,6 +74,11 @@ namespace Peakingu
         private bool isJumping;
         private bool jumpHeld;
         private bool isFacingRight = true;
+        private bool isMovementLocked = false;
+
+        // Mejoras pasivas (PlayerStats)
+        private bool hasJetBoots = false;
+        private bool canDoubleJump = false;
 
         // Variables de Dash
         private bool isDashing;
@@ -101,6 +107,14 @@ namespace Peakingu
             if (groundLayer == 0)
             {
                 groundLayer = LayerMask.GetMask("Ground");
+            }
+        }
+
+        private void Start()
+        {
+            if (PlayerStats.Instance != null)
+            {
+                PlayerStats.Instance.ApplyUpgradesToPlayer();
             }
         }
 
@@ -140,6 +154,12 @@ namespace Peakingu
 
         private void ReadInput()
         {
+            if (isMovementLocked)
+            {
+                horizontalInput = 0f;
+                return;
+            }
+
             // Lectura horizontal
             if (moveAction != null)
             {
@@ -222,7 +242,17 @@ namespace Peakingu
 
                 if (jumpPressedThisFrame)
                 {
-                    jumpBufferCounter = jumpBufferTime;
+                    // Comprobación de Doble Salto con Jet-Boots en el aire
+                    if (!isGrounded && coyoteTimeCounter <= 0f && hasJetBoots && canDoubleJump)
+                    {
+                        rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce * 1.05f);
+                        canDoubleJump = false;
+                        jumpBufferCounter = 0f;
+                    }
+                    else
+                    {
+                        jumpBufferCounter = jumpBufferTime;
+                    }
                 }
 
                 // Salto de altura variable: soltar el botón corta velocidad ascendente
@@ -283,6 +313,7 @@ namespace Peakingu
             if (isGrounded)
             {
                 coyoteTimeCounter = coyoteTime;
+                canDoubleJump = true;
             }
         }
 
@@ -363,6 +394,33 @@ namespace Peakingu
                     scale.x = -Mathf.Abs(scale.x);
                     transform.localScale = scale;
                 }
+            }
+        }
+
+        public void SetMovementLocked(bool locked)
+        {
+            isMovementLocked = locked;
+            if (locked)
+            {
+                horizontalInput = 0f;
+                if (rb != null)
+                {
+                    rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+                }
+            }
+        }
+
+        public void EnableJetBoots(bool enabled)
+        {
+            hasJetBoots = enabled;
+            jumpForce = 13.5f;
+        }
+
+        public void EnableAntiSlipGloves(bool enabled)
+        {
+            if (enabled)
+            {
+                deceleration = 120f;
             }
         }
 

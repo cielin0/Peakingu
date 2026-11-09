@@ -51,26 +51,53 @@
   - `Assets/Sprites/Panel_Bg.png` (9-sliced)
   - `Assets/Sprites/Slider_Track.png` y `Slider_Fill.png`
   - `Assets/Sprites/Menu_Background.png`
+- **PlayerStats (`Assets/Scripts/PlayerStats.cs`)**:
+  - Singleton persistente (`DontDestroyOnLoad`) para el seguimiento de habilidades y mejoras adquiridas (sin sistema de inventario, mejoras permanentes directas):
+    - **Mano con Gancho** (`hasGrapplingHook`): 30 monedas.
+    - **Jet-Boots** (`hasJetBoots`): 20 monedas. Habilita doble salto en el aire.
+    - **Guantes Antideslizantes** (`hasAntiSlipGloves`): 15 monedas. Aumenta la deceleración y control en superficies heladas.
+    - **Hidrodash** (`hasHydrodash`): 25 monedas. Optimiza la velocidad, distancia y tiempo de recarga del dash.
+  - Evento `OnUpgradeUnlocked` para notificación reactiva en tiempo real.
+  - Sincronización automática de pasivas con `PlayerController` (`ApplyUpgradesToPlayer()`).
+- **NPC Mercader (`Assets/Scripts/MerchantNPC.cs`)**:
+  - Detección de proximidad con Pingu (`Collider2D` en modo Trigger, capa `Merchant`).
+  - Cartel flotante animado `"Presiona [E]"` que aparece automáticamente al acercarse y se oculta al alejarse.
+  - Al pulsar `E` (o botón de mando), invoca la apertura del panel de la tienda y congela el movimiento del jugador.
+  - Cierre automático de seguridad si el jugador se aleja del rango.
+- **ShopManager (`Assets/Scripts/ShopManager.cs`)**:
+  - Panel modal de tienda en Canvas con diseño temático de madera y nieve.
+  - Lista de mejoras con precios oficiales validados contra `GameManager`:
+    - Mano con Gancho: 30
+    - Jet-Boots: 20
+    - Guantes Antideslizantes: 15
+    - Hidrodash: 25
+  - Validación de saldo: descuenta monedas a través de `GameManager.Instance.SpendCoins()`.
+  - Desbloqueo inmediato en `PlayerStats`, desactivación permanente del botón de compra y cambio de etiqueta a `"COMPRADO"`.
+  - Bloqueo total del movimiento del jugador (`player.SetMovementLocked(true)`) mientras la tienda permanece abierta y desbloqueo al cerrarla (`CloseShop()`).
+  - Sin inventario: el efecto es inmediato y permanente en las estadísticas del personaje.
 - **Prefabs generados**:
   - `Assets/Prefabs/Pingu.prefab`
-  - `Assets/Prefabs/GameManager.prefab`
+  - `Assets/Prefabs/GameManager.prefab` (con `PlayerStats` integrado)
   - `Assets/Prefabs/Checkpoint.prefab`
   - `Assets/Prefabs/Coin.prefab`
   - `Assets/Prefabs/HUD.prefab`
+  - `Assets/Prefabs/MerchantNPC.prefab`
+  - `Assets/Prefabs/Canvas_Shop.prefab`
 - **Tilemap y Cinemachine 2D en Nivel 1**:
   - Suelo continuo con `CompositeCollider2D`.
   - Cámara de seguimiento con Dead Zone, Look-ahead vertical y Confiner 2D.
   - Monedas flotantes interactivas colocadas sobre las plataformas de hielo de Nivel 1.
   - HUD completamente integrado y operativo en la escena.
+  - NPC Mercader situado sobre la plataforma de hielo y Canvas de Tienda en la jerarquía.
 
 ## 2. Decisiones tomadas
 - **Iluminación 2D en URP:** En el renderizador 2D de URP, los materiales de sprite por defecto (`Sprite-Lit-Default`) requieren explícitamente que la luz 2D tenga marcadas las Sorting Layers donde se ubican los objetos. Se incluyeron todas las capas del proyecto (`Default`, `Background`, `Environment`, `Collectibles`, `Characters`, `Foreground`) en el campo `targetSortingLayers` de la `Global Light 2D`.
 - **Canvas Scaler:** Se utiliza `ScaleWithScreenSize` con resolución de referencia 1920x1080 y `Match = 0.5` para garantizar una escala adecuada tanto en pantallas 16:9 como en variaciones ultra-wide o ventana de navegador WebGL.
 - **Manejo Centralizado del Tiempo:** La cuenta regresiva del temporizador se gestiona en `GameManager` para permitir persistencia entre niveles/escenas, disparar la derrota global (`OnGameOver`) y alimentar reactivamente al `HUDManager`.
 - **Transición de Menú:** El efecto de fundido a negro utiliza `CanvasGroup.alpha` con `Time.unscaledDeltaTime` asegurando transiciones suaves incluso si el tiempo del juego se pausa o cambia de escala.
+- **Tienda Sin Inventario:** Siguiendo las directrices del diseño, no existe una cuadrícula ni gestión de inventario. Comprar un objeto activa directamente el flag correspondiente en `PlayerStats` e impacta de inmediato en `PlayerController` o la mecánica de juego asociada.
 
 ## 3. Pendiente
 - Configuración de Input Actions (WASD, Espacio, E, F, R, ESC) con el nuevo Input System.
-- Mecánica de gancho cyborg (tecla R).
-- Sistema de tienda / mercader interactivo (tecla E) utilizando las monedas acumuladas.
+- Mecánica activa de lanzamiento de gancho cyborg (tecla R) al tener desbloqueada la Mano con Gancho.
 - Construcción y ambientación de los niveles restantes (Nivel 2, Escena 3 Caverna, etc.).
