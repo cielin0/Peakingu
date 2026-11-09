@@ -989,13 +989,12 @@ namespace Peakingu.Editor
             var scaler = canvasMenu.AddComponent<CanvasScaler>();
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.referenceResolution = new Vector2(1920, 1080);
-            scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
-            scaler.matchWidthOrHeight = 0.5f;
+            scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.Expand;
 
             canvasMenu.AddComponent<GraphicRaycaster>();
             var menuManager = canvasMenu.AddComponent<MenuManager>();
 
-            // 5. Fondo Panorámico con Pingu y la Montaña (Menu_Background)
+            // 5. Fondo Panorámico con Pingu y la Montaña (Zoom corregido y encuadre óptimo)
             GameObject bgObj = new GameObject("Background_Image");
             bgObj.transform.SetParent(canvasMenu.transform, false);
             var rtBg = bgObj.AddComponent<RectTransform>();
@@ -1005,17 +1004,18 @@ namespace Peakingu.Editor
             rtBg.offsetMax = Vector2.zero;
             var imgBg = bgObj.AddComponent<Image>();
             imgBg.sprite = menuBgSprite;
+            imgBg.preserveAspect = true;
             imgBg.color = Color.white;
 
-            // 6. Logo y Título "Peakingu" (Arriba del pingüino y sobre la montaña, pixel art celeste)
+            // 6. Logo y Título "Peakingu" (Arriba del pingüino y sobre la cima de la montaña)
             GameObject logoObj = new GameObject("Logo_Title");
             logoObj.transform.SetParent(canvasMenu.transform, false);
             var rtLogo = logoObj.AddComponent<RectTransform>();
-            rtLogo.anchorMin = new Vector2(0.5f, 0.82f);
-            rtLogo.anchorMax = new Vector2(0.5f, 0.82f);
+            rtLogo.anchorMin = new Vector2(0.5f, 0.84f);
+            rtLogo.anchorMax = new Vector2(0.5f, 0.84f);
             rtLogo.pivot = new Vector2(0.5f, 0.5f);
-            rtLogo.anchoredPosition = new Vector2(0f, 0f); // Centrado perfectamente sobre el pico de la montaña
-            rtLogo.sizeDelta = new Vector2(680f, 260f);
+            rtLogo.anchoredPosition = new Vector2(0f, 0f);
+            rtLogo.sizeDelta = new Vector2(620f, 240f);
 
             if (logoSprite != null)
             {
@@ -1028,7 +1028,7 @@ namespace Peakingu.Editor
                 var tmpLogo = logoObj.AddComponent<TextMeshProUGUI>();
                 if (font != null) tmpLogo.font = font;
                 tmpLogo.text = "Peakingu";
-                tmpLogo.fontSize = 110f;
+                tmpLogo.fontSize = 100f;
                 tmpLogo.fontStyle = FontStyles.Bold;
                 tmpLogo.color = new Color(0.2f, 0.85f, 1f);
                 tmpLogo.alignment = TextAlignmentOptions.Center;
@@ -1041,7 +1041,7 @@ namespace Peakingu.Editor
             rtMain.anchorMin = new Vector2(1f, 0.5f);
             rtMain.anchorMax = new Vector2(1f, 0.5f);
             rtMain.pivot = new Vector2(1f, 0.5f);
-            rtMain.anchoredPosition = new Vector2(-60f, -40f); // Pegado a la pared derecha
+            rtMain.anchoredPosition = new Vector2(-60f, -40f);
             rtMain.sizeDelta = new Vector2(380f, 380f);
 
             var vLayout = mainPanel.AddComponent<VerticalLayoutGroup>();
@@ -1064,7 +1064,7 @@ namespace Peakingu.Editor
             Button btnSettings = CreateMenuButton(mainPanel.transform, "Btn_Configuracion", "CONFIGURACIÓN", buttonSprite, font, 360f, 68f, 26f);
             UnityEditor.Events.UnityEventTools.AddPersistentListener(btnSettings.onClick, menuManager.OnSettingsClicked);
 
-            // 8. Panel Modal de Controles
+            // 8. Panel Modal de Controles (Centrado en el cuadrado y con colores de alto contraste)
             GameObject controlsPanel = new GameObject("Controls_Panel");
             controlsPanel.transform.SetParent(canvasMenu.transform, false);
             var rtCtrl = controlsPanel.AddComponent<RectTransform>();
@@ -1085,7 +1085,7 @@ namespace Peakingu.Editor
             rtCtrlTitle.anchorMin = new Vector2(0.5f, 1f);
             rtCtrlTitle.anchorMax = new Vector2(0.5f, 1f);
             rtCtrlTitle.pivot = new Vector2(0.5f, 1f);
-            rtCtrlTitle.anchoredPosition = new Vector2(0f, -25f);
+            rtCtrlTitle.anchoredPosition = new Vector2(0f, -30f);
             rtCtrlTitle.sizeDelta = new Vector2(600f, 60f);
 
             var tmpCtrlTitle = ctrlTitleObj.AddComponent<TextMeshProUGUI>();
@@ -1093,7 +1093,7 @@ namespace Peakingu.Editor
             tmpCtrlTitle.text = "CONTROLES";
             tmpCtrlTitle.fontSize = 42f;
             tmpCtrlTitle.fontStyle = FontStyles.Bold;
-            tmpCtrlTitle.color = new Color(0.1f, 0.25f, 0.5f);
+            tmpCtrlTitle.color = new Color(0.35f, 0.95f, 1f); // Celeste brillante
             tmpCtrlTitle.alignment = TextAlignmentOptions.Center;
 
             GameObject ctrlContentObj = new GameObject("Content_Controles");
@@ -1102,21 +1102,21 @@ namespace Peakingu.Editor
             rtCtrlContent.anchorMin = new Vector2(0.5f, 0.5f);
             rtCtrlContent.anchorMax = new Vector2(0.5f, 0.5f);
             rtCtrlContent.pivot = new Vector2(0.5f, 0.5f);
-            rtCtrlContent.anchoredPosition = new Vector2(0f, -10f);
-            rtCtrlContent.sizeDelta = new Vector2(660f, 340f);
+            rtCtrlContent.anchoredPosition = new Vector2(0f, 15f); // Centrado exacto en el cuadrado
+            rtCtrlContent.sizeDelta = new Vector2(680f, 360f);
 
             var tmpCtrlContent = ctrlContentObj.AddComponent<TextMeshProUGUI>();
             if (font != null) tmpCtrlContent.font = font;
-            tmpCtrlContent.text = "<b>W, A, S, D / Flechas:</b> Moverse horizontalmente\n" +
-                                  "<b>Espacio:</b> Saltar plataformas (Doble salto con Jet-Boots)\n" +
-                                  "<b>F:</b> Impulso Dash horizontal\n" +
-                                  "<b>R:</b> Mano con Gancho Cyborg\n" +
-                                  "<b>E:</b> Interactuar con Mercader / Tienda\n" +
-                                  "<b>ESC:</b> Menú / Configuración";
-            tmpCtrlContent.fontSize = 25f;
-            tmpCtrlContent.lineSpacing = 16f;
-            tmpCtrlContent.color = new Color(0.15f, 0.25f, 0.4f);
-            tmpCtrlContent.alignment = TextAlignmentOptions.Left;
+            tmpCtrlContent.text = "<b><color=#5ce1e6>W, A, S, D / Flechas:</color></b>  <color=#ffffff>Moverse horizontalmente</color>\n\n" +
+                                  "<b><color=#5ce1e6>Espacio:</color></b>  <color=#ffffff>Saltar plataformas (Doble salto con Jet-Boots)</color>\n\n" +
+                                  "<b><color=#5ce1e6>F:</color></b>  <color=#ffffff>Impulso Dash horizontal</color>\n\n" +
+                                  "<b><color=#5ce1e6>R:</color></b>  <color=#ffffff>Mano con Gancho Cyborg</color>\n\n" +
+                                  "<b><color=#5ce1e6>E:</color></b>  <color=#ffffff>Interactuar con Mercader / Tienda</color>\n\n" +
+                                  "<b><color=#5ce1e6>ESC:</color></b>  <color=#ffffff>Menú de Pausa / Configuración</color>";
+            tmpCtrlContent.fontSize = 23f;
+            tmpCtrlContent.lineSpacing = 12f;
+            tmpCtrlContent.color = Color.white; // Blanco brillante de alto contraste
+            tmpCtrlContent.alignment = TextAlignmentOptions.Center; // Centrado en el cuadrado
 
             Button btnBackCtrl = CreateMenuButton(controlsPanel.transform, "Btn_Volver_Controles", "VOLVER", buttonSprite, font, 240f, 56f, 24f);
             var rtBackCtrl = btnBackCtrl.GetComponent<RectTransform>();
@@ -1157,7 +1157,7 @@ namespace Peakingu.Editor
             tmpSetTitle.text = "CONFIGURACIÓN";
             tmpSetTitle.fontSize = 42f;
             tmpSetTitle.fontStyle = FontStyles.Bold;
-            tmpSetTitle.color = new Color(0.1f, 0.25f, 0.5f);
+            tmpSetTitle.color = new Color(0.35f, 0.95f, 1f);
             tmpSetTitle.alignment = TextAlignmentOptions.Center;
 
             // Etiqueta Volumen
@@ -1175,7 +1175,7 @@ namespace Peakingu.Editor
             tmpVolLabel.text = "Volumen Maestro:";
             tmpVolLabel.fontSize = 26f;
             tmpVolLabel.fontStyle = FontStyles.Bold;
-            tmpVolLabel.color = new Color(0.15f, 0.25f, 0.4f);
+            tmpVolLabel.color = Color.white;
             tmpVolLabel.alignment = TextAlignmentOptions.Left;
 
             // Valor de porcentaje
@@ -1193,7 +1193,7 @@ namespace Peakingu.Editor
             tmpVolVal.text = "100%";
             tmpVolVal.fontSize = 26f;
             tmpVolVal.fontStyle = FontStyles.Bold;
-            tmpVolVal.color = new Color(0.1f, 0.45f, 0.8f);
+            tmpVolVal.color = new Color(0.35f, 0.95f, 1f);
             tmpVolVal.alignment = TextAlignmentOptions.Right;
 
             // Slider de Volumen
@@ -1289,7 +1289,7 @@ namespace Peakingu.Editor
             EditorSceneManager.SaveScene(scene);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            Debug.Log("[Peakingu] Escena Menu configurada exitosamente con Logo pixel celeste, Botones pegados a la pared derecha (Iniciar/Cargar/Controles/Configuración) y Modales.");
+            Debug.Log("[Peakingu] Escena Menu configurada: fondo con zoom corregido (preserveAspect), modal de Controles con alto contraste centrado en el cuadrado.");
         }
 
         private static Button CreateMenuButton(

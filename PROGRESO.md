@@ -34,7 +34,10 @@
   - **Panel de Game Over**: overlay emergente activado al dispararse `OnGameOver` con mensaje adaptativo si la derrota fue por vidas o por tiempo agotado (pescado quemado).
 - **Escena Menú Principal Fiel al Mockup (`Assets/Scenes/Menu.unity`) y `MenuManager.cs`**:
   - Canvas adaptable con `CanvasScaler` en modo `ScaleWithScreenSize` (1920x1080).
-  - **Fondo Panorámico Oficial (`Assets/Sprites/Menu_Background.png`)**: Ilustración ártica con la montaña nevada, la cabaña con chimenea humeante y el pingüino cyborg aturdido centrado en la base.
+  - **Fondo Panorámico Oficial (`Assets/Sprites/Menu_Background.png`)**: Ilustración ártica con encuadre corregido (zoom óptimo) para dar espacio a la cabaña, montaña y pingüino, con `preserveAspect = true` y `CanvasScaler.ScreenMatchMode.Expand` para evitar distorsiones o recortes en cualquier resolución.
+  - **Modal de Controles Mejorado**:
+    - Tipografía de alto contraste (blanco puro `#ffffff` con teclas destacadas en cian `#5ce1e6`) para máxima legibilidad sobre el fondo azul marino del panel.
+    - Contenido alineado al centro (`TextAlignmentOptions.Center`) y centrado simétricamente en el cuadrado modal.
   - **Título Oficial "Peakingu" (`Assets/Sprites/Peakingu_Logo.png`)**: Logotipo en estilo píxel art celeste con borde azul marino y nieve en la parte superior de las letras, ubicado centrado sobre la cima de la montaña y arriba de Pingu.
   - **Botonera pegada a la pared derecha (`Assets/Sprites/Button_Menu.png`)**: Botones con marco pixel-art 9-sliced, fondo blanco/hielo y texto azul marino en mayúsculas:
     - **INICIAR**: Inicia el juego disparando corrutina de transición con fundido a negro (`CanvasGroup.alpha`) y carga directa de la escena `Nivel1`.
