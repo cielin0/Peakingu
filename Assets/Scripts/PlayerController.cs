@@ -427,8 +427,11 @@ namespace Peakingu
         public void Respawn(Vector3 targetPosition)
         {
             isDashing = false;
-            rb.gravityScale = defaultGravityScale;
-            rb.linearVelocity = Vector2.zero;
+            if (rb != null)
+            {
+                rb.gravityScale = defaultGravityScale;
+                rb.linearVelocity = Vector2.zero;
+            }
             transform.position = targetPosition;
             coyoteTimeCounter = 0f;
             jumpBufferCounter = 0f;

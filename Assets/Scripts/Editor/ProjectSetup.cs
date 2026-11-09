@@ -1338,21 +1338,41 @@ namespace Peakingu.Editor
             var buttonBg = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/Button_Bg.png");
             var panelBg = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/Panel_Bg.png");
 
-            // 1. Asegurar que GameManager tenga PlayerStats
+            // 1. Asegurar que GameManager tenga PlayerStats (sin duplicados)
             var gmObj = GameObject.Find("GameManager");
             if (gmObj != null)
             {
-                if (gmObj.GetComponent<PlayerStats>() == null)
+                var existingStats = gmObj.GetComponents<PlayerStats>();
+                if (existingStats.Length == 0)
                 {
                     gmObj.AddComponent<PlayerStats>();
+                }
+                else if (existingStats.Length > 1)
+                {
+                    for (int i = 1; i < existingStats.Length; i++)
+                    {
+                        DestroyImmediate(existingStats[i]);
+                    }
                 }
             }
 
             var gmPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/GameManager.prefab");
-            if (gmPrefab != null && gmPrefab.GetComponent<PlayerStats>() == null)
+            if (gmPrefab != null)
             {
-                gmPrefab.AddComponent<PlayerStats>();
-                EditorUtility.SetDirty(gmPrefab);
+                var prefabStats = gmPrefab.GetComponents<PlayerStats>();
+                if (prefabStats.Length == 0)
+                {
+                    gmPrefab.AddComponent<PlayerStats>();
+                    EditorUtility.SetDirty(gmPrefab);
+                }
+                else if (prefabStats.Length > 1)
+                {
+                    for (int i = 1; i < prefabStats.Length; i++)
+                    {
+                        DestroyImmediate(prefabStats[i], true);
+                    }
+                    EditorUtility.SetDirty(gmPrefab);
+                }
             }
 
             // 2. Crear / Actualizar Canvas de la Tienda

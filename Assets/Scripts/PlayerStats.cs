@@ -36,12 +36,18 @@ namespace Peakingu
         {
             if (Instance != null && Instance != this)
             {
-                Destroy(gameObject);
+                // Destruir únicamente el componente duplicado, NUNCA el GameObject
+                Destroy(this);
                 return;
             }
 
             Instance = this;
-            DontDestroyOnLoad(gameObject);
+
+            // Si es un objeto raíz y no está sobre GameManager (que ya gestiona DontDestroyOnLoad)
+            if (transform.parent == null && GetComponent<GameManager>() == null)
+            {
+                DontDestroyOnLoad(gameObject);
+            }
         }
 
         public bool HasUpgrade(UpgradeType upgrade)

@@ -96,6 +96,7 @@
 - **Manejo Centralizado del Tiempo:** La cuenta regresiva del temporizador se gestiona en `GameManager` para permitir persistencia entre niveles/escenas, disparar la derrota global (`OnGameOver`) y alimentar reactivamente al `HUDManager`.
 - **Transición de Menú:** El efecto de fundido a negro utiliza `CanvasGroup.alpha` con `Time.unscaledDeltaTime` asegurando transiciones suaves incluso si el tiempo del juego se pausa o cambia de escala.
 - **Tienda Sin Inventario:** Siguiendo las directrices del diseño, no existe una cuadrícula ni gestión de inventario. Comprar un objeto activa directamente el flag correspondiente en `PlayerStats` e impacta de inmediato en `PlayerController` o la mecánica de juego asociada.
+- **Aislamiento Seguro de Singletons (`PlayerStats` / `ShopManager`):** En componentes adicionales adjuntos a objetos principales como `GameManager`, la eliminación de duplicados en `Awake()` utiliza `Destroy(this)` en vez de `Destroy(gameObject)`. Esto evita que un componente secundario duplicado destruya por error el GameObject del `GameManager`, preservando intacto el contador de vidas, el temporizador del horno y la recolección de monedas.
 
 ## 3. Pendiente
 - Configuración de Input Actions (WASD, Espacio, E, F, R, ESC) con el nuevo Input System.

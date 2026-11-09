@@ -23,7 +23,7 @@ namespace Peakingu
         [SerializeField] private float initialTimeInSeconds = 1200f;
         [Tooltip("Indica si el temporizador regresivo se encuentra activo.")]
         [SerializeField] private bool timerIsRunning = true;
-        [SerializeField] private float currentTimeRemaining;
+        [System.NonSerialized] private float currentTimeRemaining;
 
         [Header("Checkpoint y Respawn")]
         [Tooltip("Punto inicial de aparición por defecto.")]
