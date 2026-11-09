@@ -212,6 +212,10 @@ namespace Peakingu
             // Notificar al GrapplePoint
             activePoint.OnGrappleAttach();
 
+            // Audio
+            if (AudioManager.Instance != null)
+                AudioManager.Instance.PlayGrappleLaunch();
+
             // Activar LineRenderer
             lr.enabled = true;
 
@@ -249,6 +253,10 @@ namespace Peakingu
                 activePoint.OnGrappleRelease();
                 activePoint = null;
             }
+
+            // Audio
+            if (AudioManager.Instance != null)
+                AudioManager.Instance.PlayGrappleRelease();
 
             // Ocultar cuerda
             lr.enabled = false;

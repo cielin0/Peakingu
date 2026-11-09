@@ -307,6 +307,18 @@ namespace Peakingu
 
         private void PlayAudio(AudioClip clip)
         {
+            // AudioManager tiene prioridad; los clips locales son fallback
+            if (clip == purchaseSuccessSfx && AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlayPurchaseSuccess();
+                return;
+            }
+            if (clip == purchaseFailedSfx && AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlayPurchaseFail();
+                return;
+            }
+
             if (clip != null)
             {
                 AudioSource.PlayClipAtPoint(clip, Camera.main != null ? Camera.main.transform.position : transform.position);

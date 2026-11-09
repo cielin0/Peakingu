@@ -95,8 +95,12 @@ namespace Peakingu
                 Debug.LogWarning("[Coin] GameManager.Instance no encontrado al recolectar la moneda.");
             }
 
-            // Efecto de sonido si está asignado
-            if (collectSfx != null)
+            // Efecto de sonido: AudioManager tiene prioridad; el collectSfx local es fallback
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlayCoin();
+            }
+            else if (collectSfx != null)
             {
                 AudioSource.PlayClipAtPoint(collectSfx, transform.position);
             }

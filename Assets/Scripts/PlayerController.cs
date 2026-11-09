@@ -98,6 +98,10 @@ namespace Peakingu
 
         // Variables de Dash
         private bool isDashing;
+
+        // Variables de audio (estado previo para detectar cambios)
+        private bool wasGroundedLastFrame = false;
+        private float prevVerticalVelocity = 0f;
         private float dashTimeLeft;
         private float dashCooldownTimer;
         private float dashDirection;
@@ -229,6 +233,7 @@ namespace Peakingu
             ReadInput();
             HandleGroundCheck();
             HandleFlip();
+            HandleAudio();
         }
 
         private void FixedUpdate()
@@ -340,6 +345,7 @@ namespace Peakingu
                         rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce * 1.05f);
                         canDoubleJump = false;
                         jumpBufferCounter = 0f;
+                        NotifyJumpAudio();
                     }
                     else
                     {
@@ -375,6 +381,9 @@ namespace Peakingu
             // Desactiva gravedad durante el dash
             rb.gravityScale = 0f;
             rb.linearVelocity = new Vector2(dashDirection * dashSpeed, 0f);
+
+            if (AudioManager.Instance != null)
+                AudioManager.Instance.PlayDash();
         }
 
         private void ApplyDashMovement()
@@ -448,6 +457,7 @@ namespace Peakingu
             {
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
                 isJumping = false;
+                NotifyJumpAudio();
             }
 
             // Gravedad aumentada al caer para mayor agilidad
@@ -541,6 +551,51 @@ namespace Peakingu
             Gizmos.color = isGrounded ? Color.green : Color.red;
             Vector2 checkPosition = (Vector2)transform.position + groundCheckOffset;
             Gizmos.DrawWireCube(checkPosition, groundCheckSize);
+        }
+
+        /// <summary>
+        /// Gestiona los SFX reactivos de movimiento en cada frame:
+        /// salto, aterrizaje y pasos. Llamado desde Update().
+        /// </summary>
+        private void HandleAudio()
+        {
+            if (AudioManager.Instance == null) return;
+
+            // ── Aterrizaje: detecta transición de aire a suelo ──
+            if (isGrounded && !wasGroundedLastFrame)
+            {
+                // Solo reproducir si venía cayendo (comprobar velocidad previa o actual)
+                if (prevVerticalVelocity <= -1.5f || rb.linearVelocity.y <= -1.5f)
+                {
+                    AudioManager.Instance.PlayLand();
+                }
+            }
+            wasGroundedLastFrame = isGrounded;
+
+            if (!isGrounded)
+            {
+                prevVerticalVelocity = rb.linearVelocity.y;
+            }
+            else
+            {
+                prevVerticalVelocity = 0f;
+            }
+
+            // ── Pasos: mientras corre en suelo sin dashear ──
+            if (isGrounded && !isDashing && !isMovementLocked)
+            {
+                bool moving = Mathf.Abs(horizontalInput) > 0.05f;
+                AudioManager.Instance.PlayFootstep(moving);
+            }
+        }
+
+        /// <summary>
+        /// Llamado justo al ejecutar un salto real (desde ApplyJumpPhysics).
+        /// </summary>
+        private void NotifyJumpAudio()
+        {
+            if (AudioManager.Instance != null)
+                AudioManager.Instance.PlayJump();
         }
     }
 }

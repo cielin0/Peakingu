@@ -405,6 +405,14 @@ namespace Peakingu
 
         private void PlaySound(AudioClip clip)
         {
+            // AudioManager tiene prioridad para button click, game over y victoria
+            if (AudioManager.Instance != null)
+            {
+                if (clip == buttonClickSfx)       { AudioManager.Instance.PlayButtonClick();  return; }
+                if (clip == gameOverSfx)          { /* Game Over lo maneja OnGameOver del AudioManager */ return; }
+                if (clip == victorySfx)           { /* Victoria la maneja OnVictory del AudioManager */ return; }
+            }
+
             if (clip != null && audioSource != null)
             {
                 audioSource.PlayOneShot(clip);

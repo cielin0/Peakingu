@@ -216,6 +216,13 @@ namespace Peakingu
 
         private void PlayClickSound()
         {
+            // AudioManager tiene prioridad; el audioSource local es fallback
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlayButtonClick();
+                return;
+            }
+
             if (buttonClickSfx != null)
             {
                 if (audioSource != null)

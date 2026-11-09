@@ -1,0 +1,71 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3251938586091122418
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1601469993552459966}
+  - component: {fileID: 4649639736446652200}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1601469993552459966
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3251938586091122418}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4649639736446652200
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3251938586091122418}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d80f75121bde2ff4faa57d37b8c37040, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Peakingu.AudioManager
+  musicMenu: {fileID: 8300000, guid: 956a03fd2261d6b4e92e2471801d963a, type: 3}
+  musicNivel1: {fileID: 8300000, guid: c0b0b7c984f535e408f19cfe0b5b5a6b, type: 3}
+  musicCueva: {fileID: 8300000, guid: 3ffa0ca281a356c49b2bb828d5aec6e0, type: 3}
+  musicGameOver: {fileID: 8300000, guid: 8e032b906754b3c4898e3e0ed857bd95, type: 3}
+  musicVictory: {fileID: 8300000, guid: b5fc01b44fc912842aa4d8cad0e1336b, type: 3}
+  crossFadeDuration: 1
+  musicVolume: 0.5
+  sfxJump: {fileID: 8300000, guid: 5085d36b427eff7479c414d3f413feb0, type: 3}
+  sfxLand: {fileID: 8300000, guid: bf6eb3e34a53e3d4b8db0529cce90ec3, type: 3}
+  sfxFootsteps:
+  - {fileID: 8300000, guid: f92811623f7288d4885646cd84a036ec, type: 3}
+  - {fileID: 8300000, guid: eb221c856cd9a8f489dbe797b6bb6ba2, type: 3}
+  sfxDash: {fileID: 8300000, guid: c396db5f6cd2c5b4fb8d5697dd753b75, type: 3}
+  sfxGrappleLaunch: {fileID: 8300000, guid: baa17dd65d35a594ca3b212f6094be8f, type: 3}
+  sfxGrappleRelease: {fileID: 8300000, guid: a4d1b2d35cd8427438ee3b16d592fca2, type: 3}
+  sfxCoin: {fileID: 8300000, guid: 1a4d918d200cc7645bcbed9dfefb07ec, type: 3}
+  sfxPurchaseSuccess: {fileID: 8300000, guid: cfb3531cca397b0469c391bce44038c4, type: 3}
+  sfxPurchaseFail: {fileID: 8300000, guid: 322e4378741dd4146a8dcbc88d44a530, type: 3}
+  sfxButtonClick: {fileID: 8300000, guid: 92452d6c14d6632478ad28e56494640b, type: 3}
+  sfxGameOver: {fileID: 0}
+  sfxVictory: {fileID: 0}
+  echoVolume: 0.35
+  echoDelay: 0.16
+  sfxVolume: 0.8
+  footstepVolume: 0.45
