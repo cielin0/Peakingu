@@ -126,6 +126,24 @@
   - `Assets/Prefabs/HUD.prefab`
   - `Assets/Prefabs/MerchantNPC.prefab`
   - `Assets/Prefabs/Canvas_Shop.prefab`
+  - `Assets/Prefabs/Stalactite.prefab` (Peligro ambiental reactivo)
+- **Escena Cueva (`Assets/Scenes/Cueva.unity`)**:
+  - **Physics Material 2D de Hielo (`Assets/Physics/Ice_Material2D.physicsMaterial2D`)**:
+    * Fricción ultra baja (friction = 0.02f, bounciness = 0.0f) asignada al TilemapCollider2D y CompositeCollider2D del suelo y plataformas de la cueva.
+    * Genera deslizamiento e inercia natural, potenciando la utilidad de los Guantes Antideslizantes comprados en la tienda.
+  - **Estalactitas que Caen al Pasar el Jugador (`FallingStalactite.cs`)**:
+    * Suspendidas en el techo mediante Rigidbody2D.Kinematic.
+    * Detección de proximidad vertical cuando Pingu pasa por debajo.
+    * **Fase de Temblor:** Vibración horizontal durante 0.55s alertando al jugador antes de soltarse.
+    * **Fase de Caída:** Se desprende en caída libre dinámica con gravityScale = 4.0f.
+    * **Fase de Impacto y Daño:** Aplica daño directamente al jugador con GameManager.Instance.TakeDamage(1) si lo golpea y se autodestruye de inmediato (tanto contra el jugador como contra el suelo).
+  - **Indicadores Visuales de Peligro**:
+    * Marcador parpadeante de advertencia (Danger_Indicator.png) sobre la estalactita activa.
+    * Marcador de zona de impacto proyectado en el suelo (DropZone_Warning.png).
+    * Luz 2D de la estalactita que vira a tono ámbar/rojo de alerta durante la fase de temblor.
+  - **Iluminación URP 2D Dinámica y Focalizada**:
+    * Luz Global 2D oscura y tenue (azul medianoche profundo 0.06, 0.09, 0.18, intensidad 0.22f) para una atmósfera cavernosa y misteriosa.
+    * Luz puntual 2D propia en Pingu (Pingu_Cave_Light2D, Point Light 2D, radio de 5.5m e intensidad 1.35f) que ilumina su entorno inmediato, monedas y peligros conforme avanza.
 - **Tilemap y Plataformas de Prueba en Nivel 1**:
   - Suelo continuo ampliado de x = -15 a 50 (y = -3, -4) con CompositeCollider2D.
   - 8 plataformas a diferentes alturas y distancias para testeo exhaustivo de mecánicas:

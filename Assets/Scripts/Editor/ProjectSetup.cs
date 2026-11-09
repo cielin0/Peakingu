@@ -1246,6 +1246,7 @@ namespace Peakingu.Editor
             SetupLevel1HUDAndCoins();
             SetupMenuScene();
             SetupMerchantAndShop();
+            Peakingu.EditorTools.CaveSceneBuilder.BuildCaveScene();
             Debug.Log("[Peakingu] ¡Pipeline completo de Peakingu ejecutado con éxito total!");
         }
 
