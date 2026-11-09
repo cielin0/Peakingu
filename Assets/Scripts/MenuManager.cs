@@ -21,6 +21,8 @@ namespace Peakingu
         [Header("Paneles de la Interfaz")]
         [Tooltip("Panel principal que contiene los botones principales.")]
         [SerializeField] private GameObject mainButtonsPanel;
+        [Tooltip("Botón Cargar Partida.")]
+        [SerializeField] private Button loadGameButton;
         [Tooltip("Panel emergente que explica los controles del juego.")]
         [SerializeField] private GameObject controlsPanel;
         [Tooltip("Panel emergente con las opciones de configuración.")]
@@ -72,27 +74,50 @@ namespace Peakingu
             if (mainButtonsPanel != null) mainButtonsPanel.SetActive(true);
             if (controlsPanel != null) controlsPanel.SetActive(false);
             if (settingsPanel != null) settingsPanel.SetActive(false);
+
+            // Actualizar interactividad del botón de Cargar Partida según disponibilidad de guardado
+            if (loadGameButton != null)
+            {
+                loadGameButton.interactable = SaveSystem.HasSaveData();
+            }
         }
 
         #region Botones Principales
         /// <summary>
-        /// Inicia la partida ejecutando un fundido a negro y cargando la escena Nivel1.
+        /// Inicia una nueva partida desde cero ejecutando un fundido a negro y cargando la escena inicial.
         /// </summary>
         public void OnStartClicked()
         {
             if (isStartingGame) return;
 
+            SaveSystem.ClearPendingLoad();
             PlayClickSound();
             StartCoroutine(FadeAndLoadRoutine(nextSceneName));
         }
 
         /// <summary>
-        /// Botón Cargar partida (sin función por ahora según los requerimientos).
+        /// Carga la partida guardada (JSON / PlayerPrefs), restaurando monedas, mejoras, vidas y nivel.
         /// </summary>
         public void OnLoadGameClicked()
         {
+            if (isStartingGame) return;
+
+            if (!SaveSystem.HasSaveData())
+            {
+                Debug.LogWarning("[MenuManager] No existe ninguna partida guardada para cargar.");
+                return;
+            }
+
             PlayClickSound();
-            Debug.Log("[MenuManager] 'Cargar Partida': Función reservada para futuras versiones.");
+            var data = SaveSystem.LoadGame();
+            if (data != null)
+            {
+                isStartingGame = true;
+                SaveSystem.SetPendingLoad(data);
+                string targetScene = !string.IsNullOrEmpty(data.currentLevel) ? data.currentLevel : nextSceneName;
+                Debug.Log($"[MenuManager] Cargando partida guardada en nivel '{targetScene}' (Monedas={data.currentCoins}, Vidas={data.currentLives})...");
+                StartCoroutine(FadeAndLoadRoutine(targetScene));
+            }
         }
 
         /// <summary>
@@ -214,7 +239,8 @@ namespace Peakingu
             GameObject settings,
             Slider slider,
             TextMeshProUGUI volumeText,
-            string nextScene = "Nivel1")
+            string nextScene = "Nivel1",
+            Button loadBtn = null)
         {
             fadeOverlay = fadeGroup;
             mainButtonsPanel = mainPanel;
@@ -223,6 +249,7 @@ namespace Peakingu
             volumeSlider = slider;
             volumeValueText = volumeText;
             nextSceneName = nextScene;
+            loadGameButton = loadBtn;
             UnityEditor.EditorUtility.SetDirty(this);
         }
 #endif

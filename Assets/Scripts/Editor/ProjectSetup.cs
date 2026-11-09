@@ -1175,7 +1175,8 @@ namespace Peakingu.Editor
                 settingsPanel,
                 slider,
                 tmpVolVal,
-                "Nivel1"
+                "Nivel1",
+                btnLoad
             );
 
             EditorSceneManager.SaveScene(scene);

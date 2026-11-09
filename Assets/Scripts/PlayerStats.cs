@@ -99,6 +99,18 @@ namespace Peakingu
             controller.ApplyUpgrades(this);
         }
 
+        public void ApplyLoadedUpgrades(bool hook, bool boots, bool gloves, bool dash)
+        {
+            hasGrapplingHook = hook;
+            hasJetBoots = boots;
+            hasAntiSlipGloves = gloves;
+            hasHydrodash = dash;
+
+            ApplyUpgradesToPlayer();
+            OnStatsChanged?.Invoke();
+            Debug.Log($"[PlayerStats] Mejoras restauradas desde guardado: Gancho={hasGrapplingHook}, JetBoots={hasJetBoots}, Guantes={hasAntiSlipGloves}, Hidrodash={hasHydrodash}");
+        }
+
         public void ResetStats()
         {
             hasGrapplingHook = false;

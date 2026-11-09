@@ -22,6 +22,9 @@ namespace Peakingu
                 hasTriggered = true;
                 Debug.Log("[VictoryTrigger] ¡Pingu ha llegado a la meta!");
 
+                // Autoguardado al completar el nivel
+                SaveSystem.AutoSaveCurrentState();
+
                 if (victorySfx != null)
                 {
                     AudioSource.PlayClipAtPoint(victorySfx, transform.position);

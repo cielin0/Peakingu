@@ -67,9 +67,18 @@ namespace Peakingu
         private void Start()
         {
             FindPlayerAndRegisterSpawn();
-            OnLivesChanged?.Invoke(currentLives);
-            OnCoinsChanged?.Invoke(currentCoins);
-            OnTimerTick?.Invoke(currentTimeRemaining);
+
+            if (SaveSystem.HasPendingLoad)
+            {
+                var data = SaveSystem.ConsumePendingLoad();
+                ApplyLoadedSaveData(data);
+            }
+            else
+            {
+                OnLivesChanged?.Invoke(currentLives);
+                OnCoinsChanged?.Invoke(currentCoins);
+                OnTimerTick?.Invoke(currentTimeRemaining);
+            }
         }
 
         private void Update()
@@ -118,7 +127,12 @@ namespace Peakingu
             }
             else
             {
-                if (currentLives <= 0 || currentTimeRemaining <= 0f)
+                if (SaveSystem.HasPendingLoad)
+                {
+                    var data = SaveSystem.ConsumePendingLoad();
+                    ApplyLoadedSaveData(data);
+                }
+                else if (currentLives <= 0 || currentTimeRemaining <= 0f)
                 {
                     ResetGame();
                 }
@@ -260,7 +274,40 @@ namespace Peakingu
         {
             timerIsRunning = false;
             Debug.Log("[GameManager] ¡VICTORIA! Condición de victoria alcanzada.");
+            SaveSystem.AutoSaveCurrentState();
             OnVictory?.Invoke();
+        }
+
+        /// <summary>
+        /// Aplica los datos cargados desde el archivo de guardado o PlayerPrefs.
+        /// </summary>
+        public void ApplyLoadedSaveData(SaveSystem.SaveData data)
+        {
+            if (data == null) return;
+
+            currentCoins = data.currentCoins;
+            currentLives = Mathf.Clamp(data.currentLives, 1, maxLives);
+            if (data.timeRemaining > 0f)
+            {
+                currentTimeRemaining = data.timeRemaining;
+            }
+            timerIsRunning = true;
+
+            OnCoinsChanged?.Invoke(currentCoins);
+            OnLivesChanged?.Invoke(currentLives);
+            OnTimerTick?.Invoke(currentTimeRemaining);
+
+            if (PlayerStats.Instance != null)
+            {
+                PlayerStats.Instance.ApplyLoadedUpgrades(
+                    data.hasGrapplingHook,
+                    data.hasJetBoots,
+                    data.hasAntiSlipGloves,
+                    data.hasHydrodash
+                );
+            }
+
+            Debug.Log($"[GameManager] Datos de partida aplicados: Nivel={data.currentLevel}, Monedas={currentCoins}, Vidas={currentLives}, Tiempo={currentTimeRemaining:F1}s");
         }
 
         public void ResetLives()

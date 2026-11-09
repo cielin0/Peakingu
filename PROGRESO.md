@@ -100,6 +100,24 @@
   - **Protección de `Time.timeScale` frente al temporizador**:
     - El temporizador regresivo descuenta mediante `currentTimeRemaining -= Time.deltaTime`. Durante la pausa (`timeScale = 0f`), `Time.deltaTime` es `0`, por lo que el tiempo no corre en pausa.
     - Al reanudar, reiniciar o salir al menú, `Time.timeScale` se garantiza en `1f` en múltiples capas de seguridad (`PauseManager.ResumeGame()`, `RestartGame()`, `QuitToMainMenu()`, `OnDisable()`, `OnDestroy()` y `GameManager.OnSceneLoaded()`), previniendo el bug clásico de Unity donde recargar escenas con `timeScale = 0` congela el temporizador para siempre.
+- **Sistema de Guardado y Carga JSON (`SaveSystem`)**:
+  - **Estructura Serializada (`SaveData`)**:
+    - Monedas acumuladas (`currentCoins`).
+    - Vidas restantes (`currentLives`).
+    - Nivel actual (`currentLevel`).
+    - Tiempo restante en el horno (`timeRemaining`).
+    - Mejoras desbloqueadas de Pingu: `hasGrapplingHook`, `hasJetBoots`, `hasAntiSlipGloves`, `hasHydrodash`.
+    - Marca de tiempo UTC (`saveTimestamp`).
+  - **Compatibilidad Híbrida Windows y WebGL**:
+    - En WebGL: Almacenamiento directo e instantáneo a través de `PlayerPrefs` en formato JSON (`JsonUtility.ToJson`), garantizando persistencia en el almacenamiento local del navegador (IndexedDB).
+    - En Windows / Standalone / Editor: Guarda en archivo físico (`Application.persistentDataPath/peakingu_save.json`) y mantiene sincronizado `PlayerPrefs` como respaldo redundante.
+  - **Autoguardado al Terminar Nivel**:
+    - Disparado automáticamente por `VictoryTrigger` y `GameManager.TriggerVictory()` al alcanzar la cumbre o meta de nivel.
+  - **Conexión del Botón "Cargar Partida" en el Menú Principal**:
+    - Vinculado en `MenuManager.OnLoadGameClicked()`.
+    - Detecta la disponibilidad de partidas guardadas (`SaveSystem.HasSaveData()`) y desactiva el botón si no existen datos.
+    - Carga la partida, almacena el estado pendiente (`SaveSystem.SetPendingLoad`) y transiciona suavemente hacia el nivel guardado.
+    - Al cargar la escena, `GameManager` y `PlayerStats` restauran de inmediato las monedas, vidas, temporizador y aplican las mejoras al jugador (`ApplyLoadedSaveData` / `ApplyLoadedUpgrades`).
 - **Prefabs generados**:
   - `Assets/Prefabs/Pingu.prefab`
   - `Assets/Prefabs/GameManager.prefab` (con `PlayerStats` integrado)
