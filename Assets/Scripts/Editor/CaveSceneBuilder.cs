@@ -287,15 +287,18 @@ namespace Peakingu.EditorTools
             rb.bodyType = RigidbodyType2D.Kinematic;
             rb.gravityScale = 0f;
             rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+            rb.interpolation = RigidbodyInterpolation2D.Interpolate;
 
             var col = obj.AddComponent<PolygonCollider2D>();
-            // Colisionador ajustado a la forma cónica hacia abajo (pivot superior)
+            // Colisionador ajustado a la forma cónica hacia abajo (dejando margen arriba para no tocar el techo)
             Vector2[] points = new Vector2[]
             {
-                new Vector2(-0.75f, 0.0f),
-                new Vector2(0.75f, 0.0f),
-                new Vector2(0.12f, -3.8f),
-                new Vector2(-0.12f, -3.8f)
+                new Vector2(-0.6f, -0.1f),
+                new Vector2(0.6f, -0.1f),
+                new Vector2(0.35f, -2.5f),
+                new Vector2(0.1f, -3.9f),
+                new Vector2(-0.1f, -3.9f),
+                new Vector2(-0.35f, -2.5f)
             };
             col.SetPath(0, points);
 
@@ -488,15 +491,15 @@ namespace Peakingu.EditorTools
             GameObject stalactitesContainer = new GameObject("Stalactites_Container");
             Vector3[] stalactitePositions = new Vector3[]
             {
-                new Vector3(-4f, 6.8f, 0f),   // Camino inicial
-                new Vector3(4.5f, 6.8f, 0f),  // Sobre Plataforma 1
-                new Vector3(9.5f, 6.8f, 0f),  // Entre plataformas
-                new Vector3(14.5f, 6.8f, 0f), // Sobre Plataforma 2
-                new Vector3(19.5f, 6.8f, 0f), // Gap hacia Plataforma 3
-                new Vector3(25f, 6.8f, 0f),   // Sobre Plataforma 3
-                new Vector3(30f, 6.8f, 0f),   // Descenso
-                new Vector3(35f, 6.8f, 0f),   // Sobre Plataforma 4
-                new Vector3(40f, 6.8f, 0f)    // Tramo final antes de la meta
+                new Vector3(-4f, 6.85f, 0f),   // Camino inicial
+                new Vector3(4.5f, 6.85f, 0f),  // Sobre Plataforma 1
+                new Vector3(9.5f, 6.85f, 0f),  // Entre plataformas
+                new Vector3(14.5f, 6.85f, 0f), // Sobre Plataforma 2
+                new Vector3(19.5f, 6.85f, 0f), // Gap hacia Plataforma 3
+                new Vector3(25f, 6.85f, 0f),   // Sobre Plataforma 3
+                new Vector3(30f, 6.85f, 0f),   // Descenso
+                new Vector3(35f, 6.85f, 0f),   // Sobre Plataforma 4
+                new Vector3(40f, 6.85f, 0f)    // Tramo final antes de la meta
             };
 
             for (int i = 0; i < stalactitePositions.Length; i++)

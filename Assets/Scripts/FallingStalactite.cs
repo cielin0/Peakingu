@@ -23,17 +23,17 @@ namespace Peakingu
 
         [Header("--- Detección del Jugador ---")]
         [Tooltip("Ancho horizontal del área de detección hacia abajo.")]
-        [SerializeField] private float detectionWidth = 2.0f;
+        [SerializeField] private float detectionWidth = 2.4f;
         [Tooltip("Distancia vertical máxima hacia abajo para detectar a Pingu.")]
-        [SerializeField] private float detectionDistance = 8.5f;
+        [SerializeField] private float detectionDistance = 9.0f;
         [Tooltip("Capa del jugador para el raycast/detección.")]
         [SerializeField] private LayerMask playerLayer;
 
         [Header("--- Temblor y Caída ---")]
         [Tooltip("Duración en segundos del temblor de advertencia antes de caer.")]
-        [SerializeField] private float shakeDuration = 0.55f;
+        [SerializeField] private float shakeDuration = 0.5f;
         [Tooltip("Intensidad del desplazamiento horizontal durante el temblor.")]
-        [SerializeField] private float shakeMagnitude = 0.1f;
+        [SerializeField] private float shakeMagnitude = 0.08f;
         [Tooltip("Velocidad de oscilación del temblor.")]
         [SerializeField] private float shakeFrequency = 50f;
         [Tooltip("Escala de gravedad una vez que se desprende del techo.")]
@@ -60,6 +60,7 @@ namespace Peakingu
         private Rigidbody2D rb;
         private Collider2D col;
         private SpriteRenderer spriteRenderer;
+        private Transform playerTransform;
         private StalactiteState currentState = StalactiteState.Hanging;
         private Vector3 initialPosition;
         private float shakeTimer = 0f;
@@ -80,6 +81,8 @@ namespace Peakingu
             rb.gravityScale = 0f;
             rb.linearVelocity = Vector2.zero;
             rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+            rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+            rb.interpolation = RigidbodyInterpolation2D.Interpolate;
 
             // Ocultar indicadores al inicio
             if (warningIndicator != null) warningIndicator.SetActive(false);
@@ -87,7 +90,25 @@ namespace Peakingu
 
             if (playerLayer == 0)
             {
-                playerLayer = LayerMask.GetMask("Player", "Default");
+                playerLayer = LayerMask.GetMask("Player");
+                if (playerLayer == 0) playerLayer = LayerMask.GetMask("Default");
+            }
+        }
+
+        private void Start()
+        {
+            CachePlayer();
+        }
+
+        private void CachePlayer()
+        {
+            if (playerTransform == null)
+            {
+                var playerObj = GameObject.FindWithTag("Player");
+                if (playerObj != null)
+                {
+                    playerTransform = playerObj.transform;
+                }
             }
         }
 
@@ -104,24 +125,26 @@ namespace Peakingu
                     break;
 
                 case StalactiteState.Falling:
-                    // Medida de seguridad: Si cae al vacío por más de 4 segundos, autodestruir
                     break;
             }
         }
 
         /// <summary>
-        /// Comprueba si Pingu entra en el cono vertical de detección debajo de la estalactita.
+        /// Comprueba si Pingu entra en el área vertical de detección debajo de la estalactita.
         /// </summary>
         private void CheckPlayerUnderneath()
         {
-            var playerObj = GameObject.FindWithTag("Player");
-            if (playerObj == null) return;
+            if (playerTransform == null)
+            {
+                CachePlayer();
+                if (playerTransform == null) return;
+            }
 
-            Vector3 playerPos = playerObj.transform.position;
+            Vector3 playerPos = playerTransform.position;
             float dx = Mathf.Abs(playerPos.x - transform.position.x);
             float dy = transform.position.y - playerPos.y;
 
-            // Detectar si está alineado horizontalmente y debajo dentro de la distancia máxima
+            // Detectar si está alineado horizontalmente y dentro de la distancia hacia abajo
             if (dx <= detectionWidth * 0.5f && dy > 0.5f && dy <= detectionDistance)
             {
                 StartShakeAndFall();
@@ -139,14 +162,19 @@ namespace Peakingu
             shakeTimer = shakeDuration;
             initialPosition = transform.position;
 
-            // Activar indicadores visuales de peligro
+            // Activar indicador de advertencia sobre la estalactita
             if (warningIndicator != null)
             {
                 warningIndicator.SetActive(true);
             }
 
+            // Activar y fijar el marcador de peligro en el suelo (desvinculándolo del padre para que no tiemble ni caiga)
             if (groundDangerMarker != null)
             {
+                RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, detectionDistance + 2f, LayerMask.GetMask("Ground"));
+                float groundY = (hit.collider != null) ? (hit.point.y + 0.1f) : (transform.position.y - 7.5f);
+                groundDangerMarker.transform.position = new Vector3(transform.position.x, groundY, 0f);
+                groundDangerMarker.transform.SetParent(null, true);
                 groundDangerMarker.SetActive(true);
             }
 
@@ -187,7 +215,7 @@ namespace Peakingu
         }
 
         /// <summary>
-        /// Desprende la estalactita: activa la gravedad y comienza la caída libre acelerada.
+        /// Desprende la estalactita: activa la física dinámica y comienza la caída acelerada.
         /// </summary>
         private void ReleaseStalactite()
         {
@@ -204,7 +232,9 @@ namespace Peakingu
                 warningIndicator.SetActive(false);
             }
 
-            // Destrucción tras 4 segundos por si cae en un pozo sin colisión
+            Debug.Log($"[FallingStalactite] Estalactita desprendida en {transform.position}, cayendo.");
+
+            // Destrucción tras 4 segundos por si cae fuera de límites
             Destroy(gameObject, 4.0f);
         }
 
@@ -215,54 +245,84 @@ namespace Peakingu
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            // Si el colisionador es trigger o colisiona con el jugador
-            if (other.CompareTag("Player") || other.CompareTag("Hazard") || other.CompareTag("Ground"))
-            {
-                HandleImpact(other.gameObject);
-            }
+            HandleImpact(other.gameObject);
         }
 
         private void HandleImpact(GameObject target)
         {
             if (currentState != StalactiteState.Falling || hasHit) return;
 
-            hasHit = true;
-            currentState = StalactiteState.Destroyed;
-
-            if (target.CompareTag("Player"))
+            // Ignorar choques consigo misma, con sus hijos o con otras estalactitas
+            if (target == null || target == gameObject || target.transform.IsChildOf(transform) || target.CompareTag("Hazard"))
             {
-                // Hacer daño directo al jugador con TakeDamage
+                return;
+            }
+
+            // 1. Impacto con el jugador Pingu
+            bool isPlayer = target.CompareTag("Player") || target.GetComponentInParent<PlayerController>() != null;
+            if (isPlayer)
+            {
+                hasHit = true;
+                currentState = StalactiteState.Destroyed;
+
                 if (GameManager.Instance != null)
                 {
                     GameManager.Instance.TakeDamage(damageAmount);
-                    Debug.Log($"[FallingStalactite] Estalactita impactó a Pingu. Vidas restantes: {GameManager.Instance.CurrentLives}");
+                    Debug.Log($"[FallingStalactite] ¡Estalactita impactó a Pingu! Daño={damageAmount}. Vidas restantes: {GameManager.Instance.CurrentLives}");
                 }
                 else
                 {
-                    var pc = target.GetComponent<PlayerController>();
-                    if (pc != null)
-                    {
-                        Debug.Log("[FallingStalactite] Impacto directo a PlayerController.");
-                    }
+                    Debug.Log("[FallingStalactite] Impacto contra el jugador (GameManager no disponible).");
                 }
-            }
-            else
-            {
-                Debug.Log($"[FallingStalactite] Estalactita impactó contra {target.name} y se rompió.");
+
+                CleanupAndDestroy();
+                return;
             }
 
+            // 2. Impacto con el suelo o plataformas
+            bool isGround = target.CompareTag("Ground") || target.layer == LayerMask.NameToLayer("Ground");
+            if (isGround)
+            {
+                // REGLA CRUCIAL: El techo de la cueva también comparte el tilemap y la capa "Ground".
+                // Si la estalactita aún no ha descendido al menos 1.2 unidades del techo, ignorar el contacto con el techo.
+                if (transform.position.y > initialPosition.y - 1.2f)
+                {
+                    return;
+                }
+
+                hasHit = true;
+                currentState = StalactiteState.Destroyed;
+                Debug.Log($"[FallingStalactite] Estalactita impactó contra el suelo ({target.name}) en Y={transform.position.y:F2} y se destruyó.");
+
+                CleanupAndDestroy();
+                return;
+            }
+
+            // Cualquier otro trigger u objeto que no sea Player ni Ground se ignora
+        }
+
+        private void CleanupAndDestroy()
+        {
             if (impactSfx != null)
             {
                 AudioSource.PlayClipAtPoint(impactSfx, transform.position);
             }
 
-            // Ocultar marcador del suelo al destruirse
             if (groundDangerMarker != null)
             {
-                groundDangerMarker.SetActive(false);
+                Destroy(groundDangerMarker);
+                groundDangerMarker = null;
             }
 
             Destroy(gameObject);
+        }
+
+        private void OnDestroy()
+        {
+            if (groundDangerMarker != null)
+            {
+                Destroy(groundDangerMarker);
+            }
         }
 
         private void OnDrawGizmosSelected()
