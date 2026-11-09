@@ -89,6 +89,20 @@
   - `Assets/Prefabs/HUD.prefab`
   - `Assets/Prefabs/MerchantNPC.prefab`
   - `Assets/Prefabs/Canvas_Shop.prefab`
+- **Tilemap y Plataformas de Prueba en Nivel 1**:
+  - Suelo continuo ampliado de x = -15 a 50 (y = -3, -4) con CompositeCollider2D.
+  - 8 plataformas a diferentes alturas y distancias para testeo exhaustivo de mecánicas:
+    * Plataforma A (x = -5 a -2, y = -1): plataforma baja inicial.
+    * Plataforma B (x = 2 a 7, y = 0): plataforma intermedia de hielo.
+    * Plataforma C (x = 9 a 14, y = 3): zona del NPC Mercader (x = 12, y = 3.8).
+    * Plataforma D (x = 16 a 20, y = 6): prueba de salto alto y doble salto.
+    * Plataforma E (x = 22 a 26, y = 9): pico más elevado para probar medidor de altura y Jet-Boots.
+    * Plataforma F (x = 29 a 34, y = 6): gap horizontal de 3 unidades para probar Hidrodash de largo alcance.
+    * Plataforma G (x = 37 a 42, y = 3): descenso escalonado para frenado en hielo con Guantes.
+    * Plataforma H (x = 45 a 49, y = 0): extremo derecho antes del límite del nivel.
+  - Total de 48 monedas flotantes interactivas distribuidas estratégicamente (suelo inicial, plataformas A-H, arcos aéreos de salto y dash, y ruta baja).
+  - Cámara CameraConfiner_Level1 ampliada a x: -20 a 55, y: -6 a 16.
+  - KillZone ampliada con ancho de 160 unidades centrada en x = 15, y = -7.
 - **Tilemap y Cinemachine 2D en Nivel 1**:
   - Suelo continuo con `CompositeCollider2D`.
   - Cámara de seguimiento con Dead Zone, Look-ahead vertical y Confiner 2D.

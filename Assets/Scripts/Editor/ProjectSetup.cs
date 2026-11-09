@@ -182,19 +182,52 @@ namespace Peakingu.Editor
             var compCollider = tilemapObj.AddComponent<CompositeCollider2D>();
             compCollider.geometryType = CompositeCollider2D.GeometryType.Polygons;
 
-            // Pintar suelo y plataformas
-            for (int x = -15; x <= 22; x++)
+            // Pintar suelo y plataformas de prueba variadas
+            // Suelo continuo (-15 a 50)
+            for (int x = -15; x <= 50; x++)
             {
                 tilemap.SetTile(new Vector3Int(x, -3, 0), groundTile);
                 tilemap.SetTile(new Vector3Int(x, -4, 0), groundTile);
             }
+            // Plataforma A (inicio bajo: x = -5 a -2, y = -1)
+            for (int x = -5; x <= -2; x++)
+            {
+                tilemap.SetTile(new Vector3Int(x, -1, 0), groundTile);
+            }
+            // Plataforma B (media: x = 2 a 7, y = 0)
             for (int x = 2; x <= 7; x++)
             {
                 tilemap.SetTile(new Vector3Int(x, 0, 0), groundTile);
             }
+            // Plataforma C (mercader: x = 9 a 14, y = 3)
             for (int x = 9; x <= 14; x++)
             {
                 tilemap.SetTile(new Vector3Int(x, 3, 0), groundTile);
+            }
+            // Plataforma D (salto alto / doble salto: x = 16 a 20, y = 6)
+            for (int x = 16; x <= 20; x++)
+            {
+                tilemap.SetTile(new Vector3Int(x, 6, 0), groundTile);
+            }
+            // Plataforma E (pico mas alto / test altura: x = 22 a 26, y = 9)
+            for (int x = 22; x <= 26; x++)
+            {
+                tilemap.SetTile(new Vector3Int(x, 9, 0), groundTile);
+            }
+            // Plataforma F (gap largo / test hidrodash: x = 29 a 34, y = 6)
+            for (int x = 29; x <= 34; x++)
+            {
+                tilemap.SetTile(new Vector3Int(x, 6, 0), groundTile);
+            }
+            // Plataforma G (bajada media: x = 37 a 42, y = 3)
+            for (int x = 37; x <= 42; x++)
+            {
+                tilemap.SetTile(new Vector3Int(x, 3, 0), groundTile);
+            }
+            // Plataforma H (extremo derecho: x = 45 a 49, y = 0)
+            for (int x = 45; x <= 49; x++)
+            {
+                tilemap.SetTile(new Vector3Int(x, 0, 0), groundTile);
             }
 
             // Forzar actualización inmediata de la geometría física en el Tilemap
@@ -229,9 +262,9 @@ namespace Peakingu.Editor
             Vector2[] confinerPoints = new Vector2[]
             {
                 new Vector2(-20f, -6f),
-                new Vector2(25f, -6f),
-                new Vector2(25f, 15f),
-                new Vector2(-20f, 15f)
+                new Vector2(55f, -6f),
+                new Vector2(55f, 16f),
+                new Vector2(-20f, 16f)
             };
             polyCollider.SetPath(0, confinerPoints);
 
@@ -842,12 +875,70 @@ namespace Peakingu.Editor
             GameObject coinsContainer = new GameObject("Coins_Container");
             Vector3[] coinPositions = new Vector3[]
             {
+                // Zona inicial en suelo
+                new Vector3(-12f, -2f, 0f),
+                new Vector3(-10f, -2f, 0f),
+                new Vector3(-8f, -2f, 0f),
+                new Vector3(-6f, -2f, 0f),
+                // Plataforma A
+                new Vector3(-4.5f, 0.2f, 0f),
+                new Vector3(-3.5f, 0.2f, 0f),
+                new Vector3(-2.5f, 0.2f, 0f),
+                // Suelo entre A y B
+                new Vector3(-1f, -2f, 0f),
+                new Vector3(0f, -2f, 0f),
+                new Vector3(1f, -2f, 0f),
+                // Plataforma B
                 new Vector3(3f, 1.2f, 0f),
                 new Vector3(4.5f, 1.2f, 0f),
                 new Vector3(6f, 1.2f, 0f),
-                new Vector3(10f, 4.2f, 0f),
-                new Vector3(11.5f, 4.2f, 0f),
-                new Vector3(13f, 4.2f, 0f)
+                // Plataforma C (cerca mercader)
+                new Vector3(9.5f, 4.2f, 0f),
+                new Vector3(10.5f, 4.2f, 0f),
+                new Vector3(13.5f, 4.2f, 0f),
+                // Arco hacia Plataforma D
+                new Vector3(15f, 4.8f, 0f),
+                new Vector3(15.5f, 6.0f, 0f),
+                // Plataforma D
+                new Vector3(17f, 7.2f, 0f),
+                new Vector3(18f, 7.2f, 0f),
+                new Vector3(19f, 7.2f, 0f),
+                // Arco hacia Plataforma E (Pico mas alto)
+                new Vector3(21f, 8.2f, 0f),
+                new Vector3(21.5f, 9.5f, 0f),
+                // Plataforma E (Cumbre)
+                new Vector3(23f, 10.2f, 0f),
+                new Vector3(24f, 10.5f, 0f),
+                new Vector3(25f, 10.2f, 0f),
+                // Arco hacia Plataforma F (Gap Hidrodash)
+                new Vector3(27f, 8.5f, 0f),
+                new Vector3(28f, 7.5f, 0f),
+                // Plataforma F
+                new Vector3(30f, 7.2f, 0f),
+                new Vector3(31.5f, 7.2f, 0f),
+                new Vector3(33f, 7.2f, 0f),
+                // Arco hacia Plataforma G
+                new Vector3(35f, 5.5f, 0f),
+                new Vector3(36f, 4.5f, 0f),
+                // Plataforma G
+                new Vector3(38f, 4.2f, 0f),
+                new Vector3(39.5f, 4.2f, 0f),
+                new Vector3(41f, 4.2f, 0f),
+                // Arco hacia Plataforma H
+                new Vector3(43f, 2.5f, 0f),
+                new Vector3(44f, 1.5f, 0f),
+                // Plataforma H
+                new Vector3(46f, 1.2f, 0f),
+                new Vector3(47f, 1.2f, 0f),
+                new Vector3(48f, 1.2f, 0f),
+                // Camino inferior en el suelo
+                new Vector3(16f, -2f, 0f),
+                new Vector3(20f, -2f, 0f),
+                new Vector3(24f, -2f, 0f),
+                new Vector3(28f, -2f, 0f),
+                new Vector3(32f, -2f, 0f),
+                new Vector3(36f, -2f, 0f),
+                new Vector3(40f, -2f, 0f)
             };
 
             for (int i = 0; i < coinPositions.Length; i++)
@@ -887,10 +978,10 @@ namespace Peakingu.Editor
             if (existingKZ == null)
             {
                 GameObject kzObj = new GameObject("KillZone");
-                kzObj.transform.position = new Vector3(0f, -7f, 0f);
+                kzObj.transform.position = new Vector3(15f, -7f, 0f);
                 var kzCol = kzObj.AddComponent<BoxCollider2D>();
                 kzCol.isTrigger = true;
-                kzCol.size = new Vector2(100f, 2f);
+                kzCol.size = new Vector2(160f, 2f);
                 kzObj.AddComponent<KillZone>();
             }
 
