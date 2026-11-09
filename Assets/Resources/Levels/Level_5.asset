@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 086b4f152a9264d42b908263ea01111b, type: 3}
+  m_Name: Level_5
+  m_EditorClassIdentifier: Assembly-CSharp::Peakingu.LevelData
+  levelNumber: 5
+  levelName: Cima Peakingu
+  sceneName: Nivel5
+  description: "\xA1La cumbre final! Carrera contrarreloj para salvar el pescado antes de que se queme en el horno."
+  timeLimit: 120
+  timeSpeed: 1.6
+  difficulty: 4
+  coinReward: 50
+  nextLevelData: {fileID: 0}
+  nextSceneName: 
+  isFinalLevel: 1

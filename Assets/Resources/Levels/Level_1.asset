@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 086b4f152a9264d42b908263ea01111b, type: 3}
+  m_Name: Level_1
+  m_EditorClassIdentifier: Assembly-CSharp::Peakingu.LevelData
+  levelNumber: 1
+  levelName: Laderas Bajas
+  sceneName: Nivel1
+  description: "Aprende el movimiento b\xE1sico, salto y recolecci\xF3n de monedas en la ladera nevada."
+  timeLimit: 240
+  timeSpeed: 1
+  difficulty: 0
+  coinReward: 15
+  nextLevelData: {fileID: 11400000, guid: d7a5f9d3a55ee6949bff47f51c1dd582, type: 2}
+  nextSceneName: Nivel2
+  isFinalLevel: 0

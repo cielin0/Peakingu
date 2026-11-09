@@ -21,9 +21,17 @@ namespace Peakingu
         [Header("Temporizador (Pescado en el horno)")]
         [Tooltip("Tiempo límite inicial en segundos (20 minutos = 1200 s por defecto).")]
         [SerializeField] private float initialTimeInSeconds = 1200f;
+        [Tooltip("Multiplicador de velocidad de paso del tiempo (balanceado por LevelData).")]
+        [SerializeField] private float timerSpeedMultiplier = 1.0f;
         [Tooltip("Indica si el temporizador regresivo se encuentra activo.")]
         [SerializeField] private bool timerIsRunning = true;
         [System.NonSerialized] private float currentTimeRemaining;
+
+        public float TimerSpeedMultiplier
+        {
+            get => timerSpeedMultiplier;
+            set => timerSpeedMultiplier = Mathf.Max(0.1f, value);
+        }
 
         [Header("Checkpoint y Respawn")]
         [Tooltip("Punto inicial de aparición por defecto.")]
@@ -90,7 +98,7 @@ namespace Peakingu
         {
             if (!timerIsRunning || currentLives <= 0) return;
 
-            currentTimeRemaining -= Time.deltaTime;
+            currentTimeRemaining -= Time.deltaTime * timerSpeedMultiplier;
 
             if (currentTimeRemaining <= 0f)
             {
@@ -105,6 +113,26 @@ namespace Peakingu
             {
                 OnTimerTick?.Invoke(currentTimeRemaining);
             }
+        }
+
+        /// <summary>
+        /// Aplica los parámetros de dificultad, tiempo límite y velocidad del tiempo definidos en LevelData.
+        /// </summary>
+        public void ApplyLevelData(LevelData levelData)
+        {
+            if (levelData == null) return;
+
+            timerSpeedMultiplier = levelData.timeSpeed;
+
+            // Si es una partida fresca o no había tiempo establecido
+            if (!SaveSystem.HasPendingLoad && (currentTimeRemaining <= 0f || currentTimeRemaining >= initialTimeInSeconds))
+            {
+                initialTimeInSeconds = levelData.timeLimit;
+                currentTimeRemaining = levelData.timeLimit;
+                OnTimerTick?.Invoke(currentTimeRemaining);
+            }
+
+            Debug.Log($"[GameManager] Nivel {levelData.levelNumber} ({levelData.levelName}) aplicado: Límite={levelData.timeLimit}s, Velocidad={timerSpeedMultiplier:F2}x, Dificultad={levelData.difficulty}");
         }
 
         private void OnEnable()
