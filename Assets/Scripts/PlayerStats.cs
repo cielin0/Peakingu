@@ -96,24 +96,7 @@ namespace Peakingu
             var controller = playerObj.GetComponent<PlayerController>();
             if (controller == null) return;
 
-            // 1. Mejora Hidrodash: Dash con cooldown acortado y más impulso
-            if (hasHydrodash)
-            {
-                controller.dashCooldown = 0.5f; // Reduce enfriamiento de 1.0s a 0.5s
-                controller.dashSpeed = 22f;     // Aumenta velocidad de 18f a 22f
-            }
-
-            // 2. Mejora Jet-Boots: Mayor altura de salto base y doble salto
-            if (hasJetBoots)
-            {
-                controller.EnableJetBoots(true);
-            }
-
-            // 3. Mejora Guantes Antideslizantes: Máxima tracción y frenado
-            if (hasAntiSlipGloves)
-            {
-                controller.EnableAntiSlipGloves(true);
-            }
+            controller.ApplyUpgrades(this);
         }
 
         public void ResetStats()
@@ -122,6 +105,7 @@ namespace Peakingu
             hasJetBoots = false;
             hasAntiSlipGloves = false;
             hasHydrodash = false;
+            ApplyUpgradesToPlayer();
             OnStatsChanged?.Invoke();
         }
     }

@@ -12,11 +12,11 @@ namespace Peakingu
         [SerializeField] private float moveSpeed = 8f;
         [Tooltip("Fuerza de aceleración al empezar a moverse.")]
         [SerializeField] private float acceleration = 60f;
-        [Tooltip("Fuerza de desaceleración al soltar la tecla.")]
+        [Tooltip("Fuerza de desaceleración al soltar la tecla (inercia en hielo).")]
         [SerializeField] private float deceleration = 70f;
 
         [Header("Salto")]
-        [Tooltip("Impulso inicial del salto.")]
+        [Tooltip("Impulso inicial del salto base.")]
         [SerializeField] private float jumpForce = 13f;
         [Tooltip("Multiplicador de gravedad al caer para un salto más ágil.")]
         [SerializeField] private float fallMultiplier = 2.5f;
@@ -62,9 +62,23 @@ namespace Peakingu
         public bool IsFacingRight => isFacingRight;
         public bool IsMovementLocked => isMovementLocked;
 
+        // Propiedades de mejoras activas
+        public bool HasJetBoots => hasJetBoots;
+        public bool HasAntiSlipGloves => hasAntiSlipGloves;
+        public bool HasHydrodash => hasHydrodash;
+
         // Referencias internas
         private Rigidbody2D rb;
         private BoxCollider2D boxCollider;
+
+        // Valores base de configuración (para restaurar y escalar con mejoras)
+        private float defaultMoveSpeed;
+        private float defaultAcceleration;
+        private float defaultDeceleration;
+        private float defaultJumpForce;
+        private float defaultDashSpeed;
+        private float defaultDashDuration;
+        private float defaultDashCooldown;
 
         // Variables de movimiento y salto
         private float horizontalInput;
@@ -78,6 +92,8 @@ namespace Peakingu
 
         // Mejoras pasivas (PlayerStats)
         private bool hasJetBoots = false;
+        private bool hasAntiSlipGloves = false;
+        private bool hasHydrodash = false;
         private bool canDoubleJump = false;
 
         // Variables de Dash
@@ -97,7 +113,19 @@ namespace Peakingu
         {
             rb = GetComponent<Rigidbody2D>();
             boxCollider = GetComponent<BoxCollider2D>();
-            defaultGravityScale = rb.gravityScale;
+            if (rb != null)
+            {
+                defaultGravityScale = rb.gravityScale;
+            }
+
+            // Almacenar valores originales para poder alternar o escalar
+            defaultMoveSpeed = moveSpeed;
+            defaultAcceleration = acceleration;
+            defaultDeceleration = deceleration;
+            defaultJumpForce = jumpForce;
+            defaultDashSpeed = dashSpeed;
+            defaultDashDuration = dashDuration;
+            defaultDashCooldown = dashCooldown;
 
             if (spriteRenderer == null)
             {
@@ -112,10 +140,7 @@ namespace Peakingu
 
         private void Start()
         {
-            if (PlayerStats.Instance != null)
-            {
-                PlayerStats.Instance.ApplyUpgradesToPlayer();
-            }
+            SyncWithPlayerStats();
         }
 
         private void OnEnable()
@@ -123,6 +148,10 @@ namespace Peakingu
             if (moveAction != null) moveAction.action.Enable();
             if (jumpAction != null) jumpAction.action.Enable();
             if (dashAction != null) dashAction.action.Enable();
+
+            // Suscribirse reactivamente a cambios de mejoras
+            PlayerStats.OnStatsChanged += SyncWithPlayerStats;
+            PlayerStats.OnUpgradeUnlocked += HandleUpgradeUnlocked;
         }
 
         private void OnDisable()
@@ -130,6 +159,68 @@ namespace Peakingu
             if (moveAction != null) moveAction.action.Disable();
             if (jumpAction != null) jumpAction.action.Disable();
             if (dashAction != null) dashAction.action.Disable();
+
+            PlayerStats.OnStatsChanged -= SyncWithPlayerStats;
+            PlayerStats.OnUpgradeUnlocked -= HandleUpgradeUnlocked;
+        }
+
+        private void SyncWithPlayerStats()
+        {
+            if (PlayerStats.Instance != null)
+            {
+                ApplyUpgrades(PlayerStats.Instance);
+            }
+        }
+
+        private void HandleUpgradeUnlocked(UpgradeType upgrade)
+        {
+            SyncWithPlayerStats();
+        }
+
+        public void ApplyUpgrades(PlayerStats stats)
+        {
+            if (stats == null) return;
+
+            // 1. Jet-Boots: Salto más alto + Doble salto
+            hasJetBoots = stats.hasJetBoots;
+            if (hasJetBoots)
+            {
+                jumpForce = defaultJumpForce * 1.25f; // Salto más alto (ej: 13f -> 16.25f)
+            }
+            else
+            {
+                jumpForce = defaultJumpForce;
+            }
+
+            // 2. Guantes Antideslizantes: Menos inercia en hielo (frenado inmediato y tracción superior)
+            hasAntiSlipGloves = stats.hasAntiSlipGloves;
+            if (hasAntiSlipGloves)
+            {
+                deceleration = 180f; // Menos inercia: parada en seco sin deslizarse
+                acceleration = 95f;  // Respuesta ágil al acelerar
+            }
+            else
+            {
+                deceleration = defaultDeceleration; // 70f (inercia resbaladiza normal en hielo)
+                acceleration = defaultAcceleration; // 60f
+            }
+
+            // 3. Hidrodash: Menos cooldown y más distancia
+            hasHydrodash = stats.hasHydrodash;
+            if (hasHydrodash)
+            {
+                dashCooldown = 0.4f;                  // Menos enfriamiento (de 1.0s a 0.4s)
+                dashSpeed = defaultDashSpeed * 1.35f; // Mayor impulso horizontal (de 18f a 24.3f)
+                dashDuration = defaultDashDuration * 1.3f; // Mayor tiempo de impulso (de 0.2s a 0.26s) -> Mucha más distancia
+            }
+            else
+            {
+                dashCooldown = defaultDashCooldown;
+                dashSpeed = defaultDashSpeed;
+                dashDuration = defaultDashDuration;
+            }
+
+            Debug.Log($"[PlayerController] Mejoras actualizadas: JetBoots={hasJetBoots} (FuerzaSalto={jumpForce:F1}), Guantes={hasAntiSlipGloves} (Frenado={deceleration:F1}), Hidrodash={hasHydrodash} (Cooldown={dashCooldown:F2}s, Velocidad={dashSpeed:F1})");
         }
 
         private void Update()
@@ -245,6 +336,7 @@ namespace Peakingu
                     // Comprobación de Doble Salto con Jet-Boots en el aire
                     if (!isGrounded && coyoteTimeCounter <= 0f && hasJetBoots && canDoubleJump)
                     {
+                        // Impulso ascendente enérgico para el doble salto
                         rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce * 1.05f);
                         canDoubleJump = false;
                         jumpBufferCounter = 0f;
@@ -413,15 +505,22 @@ namespace Peakingu
         public void EnableJetBoots(bool enabled)
         {
             hasJetBoots = enabled;
-            jumpForce = 13.5f;
+            jumpForce = enabled ? defaultJumpForce * 1.25f : defaultJumpForce;
         }
 
         public void EnableAntiSlipGloves(bool enabled)
         {
-            if (enabled)
-            {
-                deceleration = 120f;
-            }
+            hasAntiSlipGloves = enabled;
+            deceleration = enabled ? 180f : defaultDeceleration;
+            acceleration = enabled ? 95f : defaultAcceleration;
+        }
+
+        public void EnableHydrodash(bool enabled)
+        {
+            hasHydrodash = enabled;
+            dashCooldown = enabled ? 0.4f : defaultDashCooldown;
+            dashSpeed = enabled ? defaultDashSpeed * 1.35f : defaultDashSpeed;
+            dashDuration = enabled ? defaultDashDuration * 1.3f : defaultDashDuration;
         }
 
         public void Respawn(Vector3 targetPosition)

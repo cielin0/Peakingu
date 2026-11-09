@@ -55,14 +55,16 @@
   - `Assets/Sprites/Panel_Bg.png` (9-sliced)
   - `Assets/Sprites/Slider_Track.png` y `Slider_Fill.png`
   - `Assets/Sprites/Menu_Background.png`
-- **PlayerStats (`Assets/Scripts/PlayerStats.cs`)**:
-  - Singleton persistente (`DontDestroyOnLoad`) para el seguimiento de habilidades y mejoras adquiridas (sin sistema de inventario, mejoras permanentes directas):
-    - **Mano con Gancho** (`hasGrapplingHook`): 30 monedas.
-    - **Jet-Boots** (`hasJetBoots`): 20 monedas. Habilita doble salto en el aire.
-    - **Guantes Antideslizantes** (`hasAntiSlipGloves`): 15 monedas. Aumenta la deceleración y control en superficies heladas.
-    - **Hidrodash** (`hasHydrodash`): 25 monedas. Optimiza la velocidad, distancia y tiempo de recarga del dash.
-  - Evento `OnUpgradeUnlocked` para notificación reactiva en tiempo real.
-  - Sincronización automática de pasivas con `PlayerController` (`ApplyUpgradesToPlayer()`).
+- **Conexión PlayerStats con PlayerController (`PlayerStats.cs` y `PlayerController.cs`)**:
+  - Sistema de suscripción reactiva bidireccional (`OnUpgradeUnlocked` y `OnStatsChanged`) con sincronización en `Start()`.
+  - **Jet-Boots**:
+    - Salto más alto: Incrementa la fuerza base de salto (`jumpForce` de 13f a 16.25f, +25%).
+    - Doble salto: Permite un segundo salto en el aire (`canDoubleJump`) con impulso reactivo vertical que se recarga al tocar el suelo (`isGrounded`).
+  - **Guantes Antideslizantes**:
+    - Menos inercia en hielo: Aumenta la desaceleración de 70f a 180f para frenado instantáneo sin deslizamiento ni derrape, y optimiza la aceleración a 95f.
+  - **Hidrodash**:
+    - Menos cooldown: Reduce el tiempo de enfriamiento del dash de 1.0s a 0.4s (más del doble de frecuencia).
+    - Más distancia: Incrementa la velocidad de avance (`dashSpeed` de 18f a 24.3f) y extiende la duración del dash (`dashDuration` de 0.2s a 0.26s), alcanzando más de un 70% de distancia extra por impulso.
 - **NPC Mercader (`Assets/Scripts/MerchantNPC.cs`)**:
   - Detección de proximidad con Pingu (`Collider2D` en modo Trigger, capa `Merchant`).
   - Cartel flotante animado `"Presiona [E]"` que aparece automáticamente al acercarse y se oculta al alejarse.
