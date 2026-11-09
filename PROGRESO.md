@@ -34,7 +34,7 @@
   - **Panel de Game Over**: overlay emergente activado al dispararse `OnGameOver` con mensaje adaptativo si la derrota fue por vidas o por tiempo agotado (pescado quemado).
 - **Escena Menú Principal Fiel al Mockup (`Assets/Scenes/Menu.unity`) y `MenuManager.cs`**:
   - Canvas adaptable con `CanvasScaler` en modo `ScaleWithScreenSize` (1920x1080).
-  - **Fondo Panorámico Oficial (`Assets/Sprites/Menu_Background.png`)**: Ilustración ártica con encuadre corregido (zoom óptimo) para dar espacio a la cabaña, montaña y pingüino, con `preserveAspect = true` y `CanvasScaler.ScreenMatchMode.Expand` para evitar distorsiones o recortes en cualquier resolución.
+  - **Fondo Panorámico Oficial (`Assets/Sprites/Menu_Background.png`)**: Imagen original completa a máxima resolución (1024x572 nativa) asignada como fondo del Canvas (`Background_Image`), renderizada en el primer índice de la jerarquía (detrás de todo el resto de entidades, logo y paneles) y con el sprite importado en su totalidad (1024x572) para evitar cualquier tipo de recorte o zoom accidental.
   - **Modal de Controles Mejorado**:
     - Tipografía de alto contraste (blanco puro `#ffffff` con teclas destacadas en cian `#5ce1e6`) para máxima legibilidad sobre el fondo azul marino del panel.
     - Contenido alineado al centro (`TextAlignmentOptions.Center`) y centrado simétricamente en el cuadrado modal.

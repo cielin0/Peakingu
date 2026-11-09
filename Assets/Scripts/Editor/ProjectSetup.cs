@@ -994,9 +994,10 @@ namespace Peakingu.Editor
             canvasMenu.AddComponent<GraphicRaycaster>();
             var menuManager = canvasMenu.AddComponent<MenuManager>();
 
-            // 5. Fondo Panorámico con Pingu y la Montaña (Zoom corregido y encuadre óptimo)
+            // 5. Fondo Panorámico con Pingu y la Montaña (A resolución completa detrás de todas las entidades)
             GameObject bgObj = new GameObject("Background_Image");
             bgObj.transform.SetParent(canvasMenu.transform, false);
+            bgObj.transform.SetAsFirstSibling();
             var rtBg = bgObj.AddComponent<RectTransform>();
             rtBg.anchorMin = Vector2.zero;
             rtBg.anchorMax = Vector2.one;
@@ -1004,7 +1005,7 @@ namespace Peakingu.Editor
             rtBg.offsetMax = Vector2.zero;
             var imgBg = bgObj.AddComponent<Image>();
             imgBg.sprite = menuBgSprite;
-            imgBg.preserveAspect = true;
+            imgBg.preserveAspect = false;
             imgBg.color = Color.white;
 
             // 6. Logo y Título "Peakingu" (Arriba del pingüino y sobre la cima de la montaña)
