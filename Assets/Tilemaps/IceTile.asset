@@ -9,11 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 13312, guid: 0000000000000000e000000000000000, type: 0}
+  m_Script: {fileID: 11500000, guid: 998d69143cecde94a906aa22174f7544, type: 3}
   m_Name: IceTile
-  m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.Tilemaps.Tile
-  m_Sprite: {fileID: 7482667652216324306, guid: 02a4fad818aed804e8148a4cc49985cb, type: 3}
-  m_Color: {r: 0.35, g: 0.75, b: 0.95, a: 1}
+  m_EditorClassIdentifier: Assembly-CSharp::UnityEngine.Tilemaps.RandomTile
+  m_Sprite: {fileID: 5889472310231017818, guid: 868408397a9ada54398528b526002112, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Transform:
     e00: 1
     e01: 0
@@ -33,4 +33,17 @@ MonoBehaviour:
     e33: 1
   m_InstancedGameObject: {fileID: 0}
   m_Flags: 1
-  m_ColliderType: 2
+  m_ColliderType: 1
+  m_Sprites:
+  - {fileID: 5889472310231017818, guid: 868408397a9ada54398528b526002112, type: 3}
+  - {fileID: -6817342240185942284, guid: 3378100e2f5e6a44d8c5343436b4b830, type: 3}
+  - {fileID: -6498658999881695414, guid: bea0c2d23caa6444ea02b016c9f4dbe4, type: 3}
+  - {fileID: 7290556493832281324, guid: a6b9cd6096dabfe44a8ceb8fd73af94a, type: 3}
+  - {fileID: 1363601927652001798, guid: 3ea2834a2d7d66e458fe18cdd1cadf1d, type: 3}
+  - {fileID: 7123042099367088062, guid: f68f125f86776094eb1c7276fcfa4101, type: 3}
+  - {fileID: 2027227477382593484, guid: ba08125509570144a8bce4bdd8ea3a06, type: 3}
+  - {fileID: -8747877298351723794, guid: 2e87bbe22130ccc4293940d5bb1a632d, type: 3}
+  - {fileID: -6882962453147265292, guid: ca0975190e3d482478e2bb6e96e5cb1c, type: 3}
+  - {fileID: -2161783425495611298, guid: 1ebeff2f48e8def4b8008fae64dbe608, type: 3}
+  - {fileID: 1992910011914499128, guid: b1ac9568deb2cd34eb18ab2939340f2a, type: 3}
+  - {fileID: -6451409349355603187, guid: adb57b85f932ec3478630165f0f18beb, type: 3}
