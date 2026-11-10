@@ -83,11 +83,11 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 1004
-  m_SortingLayer: 4
-  m_SortingOrder: 5
+  m_SortingLayerID: 1002
+  m_SortingLayer: 2
+  m_SortingOrder: 3
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 1032971629258815371, guid: 3d1b39c8f7477444baa74b07ec785fb0, type: 3}
+  m_Sprite: {fileID: 2985140803551766962, guid: ee1460ca7c8afa24cb4f120ff0c5d9a9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -163,7 +163,7 @@ PolygonCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.8125, y: 4}
+    oldSize: {x: 0.390625, y: 0.6171875}
     newSize: {x: 1.8125, y: 4}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -171,12 +171,10 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: -0.6, y: -0.1}
-      - {x: 0.6, y: -0.1}
-      - {x: 0.35, y: -2.5}
-      - {x: 0.1, y: -3.9}
-      - {x: -0.1, y: -3.9}
-      - {x: -0.35, y: -2.5}
+    - - {x: -0.18, y: 0.3}
+      - {x: 0.18, y: 0.3}
+      - {x: 0.04, y: -0.3}
+      - {x: -0.04, y: -0.3}
   m_UseDelaunayMesh: 1
 --- !u!114 &7054368471902850924
 MonoBehaviour:
@@ -206,6 +204,11 @@ MonoBehaviour:
   warningIndicator: {fileID: 4289669105426911333}
   groundDangerMarker: {fileID: 9119682285657037049}
   stalactiteLight: {fileID: 2030872700360385148}
+  carambanoSprites:
+  - {fileID: 2985140803551766962, guid: ee1460ca7c8afa24cb4f120ff0c5d9a9, type: 3}
+  - {fileID: -2248626265319259502, guid: a3f47b29c528cda41807b6a59b0c25b5, type: 3}
+  - {fileID: -3439850763938064364, guid: a4b00ecbdbacad547bdd4e8eab0b2a75, type: 3}
+  - {fileID: -4934736926974956904, guid: 38128b551c3392d44af4d9bc5ba18439, type: 3}
 --- !u!1 &1312544192795558995
 GameObject:
   m_ObjectHideFlags: 0

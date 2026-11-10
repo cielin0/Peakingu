@@ -79,12 +79,12 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 1003
-  m_SortingLayer: 3
-  m_SortingOrder: 0
+  m_SortingLayerID: 1002
+  m_SortingLayer: 2
+  m_SortingOrder: 2
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 02a4fad818aed804e8148a4cc49985cb, type: 3}
-  m_Color: {r: 0.9, g: 0.8, b: 0.2, a: 1}
+  m_Sprite: {fileID: -2044960046543127996, guid: 23eb183338263994d828f29fce85d5ae, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -128,17 +128,17 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: 0.1}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 0.4609375, y: 1.125}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.8, y: 1.2}
   m_EdgeRadius: 0
 --- !u!114 &692764700654768054
 MonoBehaviour:
@@ -154,5 +154,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Peakingu.Checkpoint
   respawnPoint: {fileID: 0}
   spriteRenderer: {fileID: 2303390889756295599}
-  inactiveColor: {r: 0.85, g: 0.75, b: 0.2, a: 1}
-  activeColor: {r: 0.2, g: 1, b: 0.4, a: 1}
+  inactiveColor: {r: 1, g: 1, b: 1, a: 1}
+  activeColor: {r: 1, g: 1, b: 1, a: 1}
+  inactiveSprite: {fileID: -2044960046543127996, guid: 23eb183338263994d828f29fce85d5ae, type: 3}
+  activeSprite: {fileID: 1610162114512603513, guid: 7dd68a9c61e75f141ac12c1293c2c91e, type: 3}

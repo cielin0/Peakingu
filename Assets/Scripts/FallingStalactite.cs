@@ -57,6 +57,10 @@ namespace Peakingu
         [Tooltip("Luz 2D de la estalactita (cambia de color a rojo en alerta).")]
         [SerializeField] private Light2D stalactiteLight;
 
+        [Header("--- Sprites de Carámbanos (carambano_01..04) ---")]
+        [Tooltip("Lista de sprites de carámbanos para variar visualmente las estalactitas.")]
+        [SerializeField] private Sprite[] carambanoSprites;
+
         private Rigidbody2D rb;
         private Collider2D col;
         private SpriteRenderer spriteRenderer;
@@ -73,6 +77,16 @@ namespace Peakingu
             rb = GetComponent<Rigidbody2D>();
             col = GetComponent<Collider2D>();
             spriteRenderer = GetComponent<SpriteRenderer>();
+
+            // Asignar sprite de carámbano según posición o configuración
+            if (carambanoSprites != null && carambanoSprites.Length > 0 && spriteRenderer != null)
+            {
+                int spriteIndex = Mathf.Abs((int)(transform.position.x * 7 + transform.position.y * 13)) % carambanoSprites.Length;
+                if (carambanoSprites[spriteIndex] != null)
+                {
+                    spriteRenderer.sprite = carambanoSprites[spriteIndex];
+                }
+            }
 
             initialPosition = transform.position;
 

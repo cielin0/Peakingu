@@ -11,8 +11,14 @@ namespace Peakingu
 
         [Header("Visuales")]
         [SerializeField] private SpriteRenderer spriteRenderer;
-        [SerializeField] private Color inactiveColor = new Color(0.85f, 0.75f, 0.2f); // Dorado inactivo
-        [SerializeField] private Color activeColor = new Color(0.2f, 1f, 0.4f);       // Verde activo
+        [SerializeField] private Color inactiveColor = Color.white;
+        [SerializeField] private Color activeColor = Color.white;
+
+        [Header("Sprites de Bandera")]
+        [Tooltip("Sprite cuando el Checkpoint está inactivo (bandera_apagada).")]
+        [SerializeField] private Sprite inactiveSprite;
+        [Tooltip("Sprite cuando el Checkpoint está activo (bandera_encendida).")]
+        [SerializeField] private Sprite activeSprite;
 
         private bool isActivated;
 
@@ -65,7 +71,20 @@ namespace Peakingu
         {
             if (spriteRenderer != null)
             {
-                spriteRenderer.color = isActivated ? activeColor : inactiveColor;
+                if (isActivated && activeSprite != null)
+                {
+                    spriteRenderer.sprite = activeSprite;
+                    spriteRenderer.color = activeColor;
+                }
+                else if (!isActivated && inactiveSprite != null)
+                {
+                    spriteRenderer.sprite = inactiveSprite;
+                    spriteRenderer.color = inactiveColor;
+                }
+                else
+                {
+                    spriteRenderer.color = isActivated ? new Color(0.2f, 1f, 0.4f) : new Color(0.85f, 0.75f, 0.2f);
+                }
             }
         }
 

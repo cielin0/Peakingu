@@ -131,6 +131,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Stalactite_8
       objectReference: {fileID: 0}
+    - target: {fileID: 8383892308356408338, guid: bf5c383341a795142b7550981346f157, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -4934736926974956904, guid: 38128b551c3392d44af4d9bc5ba18439, type: 3}
     - target: {fileID: 8585355023639111694, guid: bf5c383341a795142b7550981346f157, type: 3}
       propertyPath: m_LocalPosition.x
       value: 35
@@ -1630,6 +1634,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Stalactite_1
       objectReference: {fileID: 0}
+    - target: {fileID: 8383892308356408338, guid: bf5c383341a795142b7550981346f157, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -3439850763938064364, guid: a4b00ecbdbacad547bdd4e8eab0b2a75, type: 3}
     - target: {fileID: 8585355023639111694, guid: bf5c383341a795142b7550981346f157, type: 3}
       propertyPath: m_LocalPosition.x
       value: -4
@@ -2305,6 +2313,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Stalactite_3
       objectReference: {fileID: 0}
+    - target: {fileID: 8383892308356408338, guid: bf5c383341a795142b7550981346f157, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -2248626265319259502, guid: a3f47b29c528cda41807b6a59b0c25b5, type: 3}
     - target: {fileID: 8585355023639111694, guid: bf5c383341a795142b7550981346f157, type: 3}
       propertyPath: m_LocalPosition.x
       value: 9.5
@@ -2367,6 +2379,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Stalactite_6
       objectReference: {fileID: 0}
+    - target: {fileID: 8383892308356408338, guid: bf5c383341a795142b7550981346f157, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -3439850763938064364, guid: a4b00ecbdbacad547bdd4e8eab0b2a75, type: 3}
     - target: {fileID: 8585355023639111694, guid: bf5c383341a795142b7550981346f157, type: 3}
       propertyPath: m_LocalPosition.x
       value: 25
@@ -2553,6 +2569,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Stalactite_7
       objectReference: {fileID: 0}
+    - target: {fileID: 8383892308356408338, guid: bf5c383341a795142b7550981346f157, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -2248626265319259502, guid: a3f47b29c528cda41807b6a59b0c25b5, type: 3}
     - target: {fileID: 8585355023639111694, guid: bf5c383341a795142b7550981346f157, type: 3}
       propertyPath: m_LocalPosition.x
       value: 30
@@ -7355,6 +7375,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Stalactite_2
       objectReference: {fileID: 0}
+    - target: {fileID: 8383892308356408338, guid: bf5c383341a795142b7550981346f157, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -4934736926974956904, guid: 38128b551c3392d44af4d9bc5ba18439, type: 3}
     - target: {fileID: 8585355023639111694, guid: bf5c383341a795142b7550981346f157, type: 3}
       propertyPath: m_LocalPosition.x
       value: 4.5
