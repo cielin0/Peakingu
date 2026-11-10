@@ -11,7 +11,9 @@ from scipy import ndimage as ndi
 RAW = Path("Assets/Sprites/Raw")
 OUT = Path("Assets/Sprites/Clean")
 LADO_TILE = 128        # tamaño en px de cada tile (PPU 128 => 1 tile = 1 unidad)
-ESCALA_DECOR = 0.35    # reducción de la decoración (1 = tamaño original)
+# Escala de la decoración por tipo (1 = tamaño original de Gemini). Sube o baja según el tamaño de Pingu.
+ESCALA_DECOR = {"pino": 0.9, "roca": 0.5, "monticulo": 0.5, "cartel": 0.55,
+                "carambano": 0.55, "bandera": 0.6, "huellas": 0.5}
 
 
 def abrir(carpeta, nombre):
@@ -69,9 +71,20 @@ def suelo():
     d = OUT / "Tiles"; d.mkdir(parents=True, exist_ok=True)
     for fi, (y0, y1) in enumerate(filas):
         for ci, (x0, x1) in enumerate(cols):
-            y0b = max(0, y1 - H) if fi == 0 else y0     # la fila superior es más baja
             x0b = max(0, x1 - W) if ci == 0 else x0
-            t = rgba.crop((x0b + M, y0b + M, x0b + W - M, y0b + H - M))
+            if fi == 0:
+                # La fila superior es más baja que las demás. En vez de dejar un hueco
+                # transparente ARRIBA (los objetos quedarían flotando sobre la nieve),
+                # se completa hacia ABAJO con el reflejo de su propia roca.
+                t = rgba.crop((x0b + M, y0 + M, x0b + W - M, y1 - M))
+                falta = (H - 2 * M) - t.height
+                lienzo = Image.new("RGBA", (t.width, t.height + falta), (0, 0, 0, 0))
+                lienzo.paste(t, (0, 0))
+                reflejo = t.crop((0, t.height - falta, t.width, t.height)).transpose(Image.FLIP_TOP_BOTTOM)
+                lienzo.paste(reflejo, (0, t.height))
+                t = lienzo
+            else:
+                t = rgba.crop((x0b + M, y0 + M, x0b + W - M, y0 + H - M))
             reducir(t, lado=LADO_TILE).save(d / f"suelo_{nombres[fi][ci]}.png")
     print("Suelo: 9 tiles OK")
 
@@ -129,7 +142,8 @@ def decoracion():
         ys, xs = caja
         sub = arr[ys, xs].copy()
         sub[..., 3] = np.where(mascara[ys, xs] & (sub[..., 3] > 0), 255, 0)
-        reducir(Image.fromarray(sub, "RGBA"), escala=ESCALA_DECOR).save(d / f"{nombre}.png")
+        esc = ESCALA_DECOR[nombre.split("_")[0]]
+        reducir(Image.fromarray(sub, "RGBA"), escala=esc).save(d / f"{nombre}.png")
 
     for num, (_, _, i, sl) in enumerate(comp, 1):
         if num in NOMBRES_DECOR:
