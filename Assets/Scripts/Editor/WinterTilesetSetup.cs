@@ -85,6 +85,7 @@ namespace Peakingu.EditorTools
                 if (importer != null)
                 {
                     importer.textureType = TextureImporterType.Sprite;
+                    importer.spriteImportMode = SpriteImportMode.Multiple;
                     importer.spritePixelsPerUnit = 128;
                     importer.filterMode = FilterMode.Point;
                     importer.textureCompression = TextureImporterCompression.Uncompressed;

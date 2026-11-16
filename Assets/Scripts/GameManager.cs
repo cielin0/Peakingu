@@ -148,6 +148,7 @@ namespace Peakingu
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             Time.timeScale = 1f; // Restaurar siempre la escala de tiempo para no romper la física ni el timer
+            hasCheckpoint = false; // Cada nuevo nivel comienza con su propio spawn inicial
             FindPlayerAndRegisterSpawn();
             if (scene.name == "Menu")
             {

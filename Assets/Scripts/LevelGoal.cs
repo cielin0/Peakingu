@@ -149,7 +149,8 @@ namespace Peakingu
 
             // 6. Niveles 1 al 4: Guardar y pasar al siguiente nivel
             Debug.Log($"[LevelGoal] Guardando partida y cargando siguiente nivel: '{nextScene}'...");
-            SaveSystem.AutoSaveCurrentState(nextScene);
+            var savedData = SaveSystem.AutoSaveCurrentState(nextScene);
+            SaveSystem.SetPendingLoad(savedData);
 
             // Breve pausa para contemplar la llegada a la meta
             yield return new WaitForSeconds(transitionDelay);

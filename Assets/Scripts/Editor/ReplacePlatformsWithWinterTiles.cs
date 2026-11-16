@@ -107,6 +107,59 @@ namespace Peakingu.EditorTools
                 tm.SetTile(new Vector3Int(x, 2, 0), ruleTile);
             }
 
+            // 5. Plataforma 4 (Paso intermedio, x = 17 a 21, y = 5, 4)
+            for (int x = 17; x <= 21; x++)
+            {
+                tm.SetTile(new Vector3Int(x, 5, 0), ruleTile);
+                tm.SetTile(new Vector3Int(x, 4, 0), ruleTile);
+            }
+
+            // 6. Plataforma 5 (Meseta alta, x = 24 a 28, y = 7, 6)
+            for (int x = 24; x <= 28; x++)
+            {
+                tm.SetTile(new Vector3Int(x, 7, 0), ruleTile);
+                tm.SetTile(new Vector3Int(x, 6, 0), ruleTile);
+            }
+
+            // 7. Plataforma 6 (Descenso, x = 31 a 35, y = 5, 4)
+            for (int x = 31; x <= 35; x++)
+            {
+                tm.SetTile(new Vector3Int(x, 5, 0), ruleTile);
+                tm.SetTile(new Vector3Int(x, 4, 0), ruleTile);
+            }
+
+            // 8. Plataforma 7 (Aproximación, x = 38 a 42, y = 3, 2)
+            for (int x = 38; x <= 42; x++)
+            {
+                tm.SetTile(new Vector3Int(x, 3, 0), ruleTile);
+                tm.SetTile(new Vector3Int(x, 2, 0), ruleTile);
+            }
+
+            // 9. Plataforma 8 (Plataforma de Meta, x = 45 a 50, y = 1, 0)
+            for (int x = 45; x <= 50; x++)
+            {
+                tm.SetTile(new Vector3Int(x, 1, 0), ruleTile);
+                tm.SetTile(new Vector3Int(x, 0, 0), ruleTile);
+            }
+
+            // Eliminar legacy Victory_Goal_Summit si existe en la escena
+            var legacyVictory = GameObject.Find("Victory_Goal_Summit");
+            if (legacyVictory != null)
+            {
+                Object.DestroyImmediate(legacyVictory);
+                Debug.Log($"[ReplacePlatforms] Legacy Victory_Goal_Summit eliminado de '{Path.GetFileName(scenePath)}'.");
+            }
+
+            // Asegurar que LevelGoal repose sobre Plataforma 8
+            var goalObj = GameObject.Find("LevelGoal_LaderasBajas") ?? GameObject.Find("LevelGoal_RutaHelada") ?? GameObject.Find("LevelGoal");
+            if (goalObj != null)
+            {
+                goalObj.transform.position = new Vector3(47.5f, 1.0f, 0f);
+                var col = goalObj.GetComponent<Collider2D>();
+                if (col != null) col.isTrigger = true;
+                EditorUtility.SetDirty(goalObj);
+            }
+
             // Forzar actualización inmediata del tilemap y de la física compuesta
             tm.RefreshAllTiles();
             var tmCollider = groundObj.GetComponent<TilemapCollider2D>();
