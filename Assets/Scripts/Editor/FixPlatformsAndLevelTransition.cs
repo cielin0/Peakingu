@@ -30,8 +30,8 @@ namespace Peakingu.EditorTools
 
         static FixPlatformsAndLevelTransition()
         {
-            // La reparación inicial ya fue completada exitosamente.
-            // Se mantiene disponible mediante el menú Tools -> Peakingu -> Reparar Plataformas y Transición de Niveles
+            // Ejecutar automáticamente para actualizar el proyecto con las plataformas arregladas
+            UnityEditor.EditorApplication.delayCall += ExecuteFix;
         }
 
         [MenuItem("Tools/Peakingu/Reparar Plataformas y Transicion de Niveles")]
@@ -95,6 +95,7 @@ namespace Peakingu.EditorTools
                 string spritePath = $"{CLEAN_TILES_SPRITES_DIR}/{name}.png";
                 string tileAssetPath = $"{TILES_DIR}/{name}.asset";
 
+                AssetDatabase.ImportAsset(spritePath, ImportAssetOptions.ForceUpdate);
                 Sprite sprite = GetSpriteAtPath(spritePath);
                 if (sprite == null)
                 {
