@@ -40,6 +40,9 @@ namespace Peakingu.EditorTools
             {
                 Debug.Log("[FixPlatforms] Iniciando corrección completa de plataformas y transición de niveles...");
 
+                // Asegurar que el Play Mode siempre inicie en el Menú Principal
+                PlayModeStartSceneEnforcer.ApplyPlayModeStartScene();
+
                 // 1. Cargar y verificar sprites
                 Tile[] cleanTiles = EnsureCleanTiles();
 
