@@ -30,8 +30,7 @@ namespace Peakingu.EditorTools
 
         static FixPlatformsAndLevelTransition()
         {
-            // Ejecutar automáticamente para actualizar el proyecto con las plataformas arregladas
-            UnityEditor.EditorApplication.delayCall += ExecuteFix;
+            // Ejecutable manualmente desde Tools -> Peakingu -> Reparar Plataformas y Transición de Niveles
         }
 
         [MenuItem("Tools/Peakingu/Reparar Plataformas y Transicion de Niveles")]
@@ -334,7 +333,7 @@ namespace Peakingu.EditorTools
             if (goalObj != null)
             {
                 goalObj.name = "LevelGoal_LaderasBajas";
-                goalObj.transform.position = new Vector3(47.5f, 1.0f, 0f); // Superficie de la plataforma en y = 1.0
+                goalObj.transform.position = new Vector3(47.5f, 1.5f, 0f); // Superficie de la plataforma en y = 1.5
 
                 var goal = goalObj.GetComponent<LevelGoal>();
                 if (goal != null)
@@ -353,6 +352,121 @@ namespace Peakingu.EditorTools
 
                 EditorUtility.SetDirty(goalObj);
                 Debug.Log($"[FixPlatforms] LevelGoal_LaderasBajas colocado en {goalObj.transform.position} con Level_1.asset");
+            }
+
+            // 4. Ajustar Checkpoint_1 y escala correcta
+            var cpObj = GameObject.Find("Checkpoint_1");
+            if (cpObj != null)
+            {
+                cpObj.transform.position = new Vector3(0f, -1.9f, 0f);
+                cpObj.transform.localScale = Vector3.one;
+                EditorUtility.SetDirty(cpObj);
+            }
+
+            // 5. Asignar SpriteRenderer al Mercader NPC (cartel de tienda)
+            var merchantObj = GameObject.Find("Merchant_NPC");
+            if (merchantObj != null)
+            {
+                var sr = merchantObj.GetComponent<SpriteRenderer>();
+                if (sr == null) sr = merchantObj.AddComponent<SpriteRenderer>();
+                sr.sprite = GetSpriteAtPath("Assets/Sprites/Clean/Decor/cartel.png");
+                sr.sortingLayerName = "Environment";
+                sr.sortingOrder = 2;
+                EditorUtility.SetDirty(merchantObj);
+            }
+
+            // 6. Fondo de montañas lejanas panorámico
+            var bgObj = GameObject.Find("Background_Mountains");
+            if (bgObj == null)
+            {
+                bgObj = new GameObject("Background_Mountains");
+                bgObj.transform.position = new Vector3(18f, 4f, 5f);
+                bgObj.transform.localScale = new Vector3(2.5f, 2.5f, 1f);
+                var sr = bgObj.AddComponent<SpriteRenderer>();
+                sr.sprite = GetSpriteAtPath("Assets/Sprites/Clean/Background/montanas_lejanas.png");
+                sr.sortingLayerName = "Background";
+                sr.sortingOrder = 0;
+                EditorUtility.SetDirty(bgObj);
+            }
+
+            // 7. Despejar decoración que colisiona con el Checkpoint en x=0
+            var decorObj = GameObject.Find("Grid/Decoration") ?? GameObject.Find("Decoration");
+            if (decorObj != null)
+            {
+                var tmDecor = decorObj.GetComponent<Tilemap>();
+                if (tmDecor != null)
+                {
+                    var tileAtCp = tmDecor.GetTile(new Vector3Int(0, -2, 0));
+                    if (tileAtCp != null)
+                    {
+                        tmDecor.SetTile(new Vector3Int(0, -2, 0), null);
+                        tmDecor.SetTile(new Vector3Int(-2, -2, 0), tileAtCp);
+                        EditorUtility.SetDirty(tmDecor);
+                    }
+                }
+            }
+
+            // 8. Ordenar y posicionar las 48 monedas de forma fluida y lógica en el nivel
+            var coinPositions = new System.Collections.Generic.Dictionary<string, Vector3>()
+            {
+                { "Coin_1",  new Vector3(-12.0f, -1.6f, 0f) },
+                { "Coin_2",  new Vector3(-10.5f, -1.6f, 0f) },
+                { "Coin_3",  new Vector3( -9.0f, -1.6f, 0f) },
+                { "Coin_4",  new Vector3( -7.5f, -1.6f, 0f) },
+                { "Coin_5",  new Vector3( -4.5f,  1.4f, 0f) },
+                { "Coin_6",  new Vector3( -3.5f,  1.4f, 0f) },
+                { "Coin_7",  new Vector3( -2.5f,  1.4f, 0f) },
+                { "Coin_8",  new Vector3( -1.5f, -1.6f, 0f) },
+                { "Coin_9",  new Vector3(  1.5f, -1.6f, 0f) },
+                { "Coin_10", new Vector3(  2.5f, -1.6f, 0f) },
+                { "Coin_11", new Vector3(  3.5f,  1.4f, 0f) },
+                { "Coin_12", new Vector3(  4.8f,  1.4f, 0f) },
+                { "Coin_13", new Vector3(  6.2f,  1.4f, 0f) },
+                { "Coin_14", new Vector3(  9.8f,  4.4f, 0f) },
+                { "Coin_15", new Vector3( 10.8f,  4.4f, 0f) },
+                { "Coin_16", new Vector3( 13.5f,  4.4f, 0f) },
+                { "Coin_17", new Vector3( 14.8f,  4.8f, 0f) },
+                { "Coin_18", new Vector3( 15.8f,  5.6f, 0f) },
+                { "Coin_19", new Vector3( 17.5f,  6.4f, 0f) },
+                { "Coin_20", new Vector3( 18.5f,  6.4f, 0f) },
+                { "Coin_21", new Vector3( 19.5f,  6.4f, 0f) },
+                { "Coin_22", new Vector3( 20.5f,  6.4f, 0f) },
+                { "Coin_23", new Vector3( 21.8f,  6.8f, 0f) },
+                { "Coin_24", new Vector3( 22.8f,  7.6f, 0f) },
+                { "Coin_25", new Vector3( 24.5f,  8.4f, 0f) },
+                { "Coin_26", new Vector3( 25.5f,  8.4f, 0f) },
+                { "Coin_27", new Vector3( 26.5f,  8.4f, 0f) },
+                { "Coin_28", new Vector3( 27.5f,  8.4f, 0f) },
+                { "Coin_29", new Vector3( 29.0f,  7.5f, 0f) },
+                { "Coin_30", new Vector3( 30.0f,  6.8f, 0f) },
+                { "Coin_31", new Vector3( 31.8f,  6.4f, 0f) },
+                { "Coin_32", new Vector3( 32.8f,  6.4f, 0f) },
+                { "Coin_33", new Vector3( 33.8f,  6.4f, 0f) },
+                { "Coin_34", new Vector3( 35.5f,  5.6f, 0f) },
+                { "Coin_35", new Vector3( 36.8f,  4.8f, 0f) },
+                { "Coin_36", new Vector3( 38.8f,  4.4f, 0f) },
+                { "Coin_37", new Vector3( 39.8f,  4.4f, 0f) },
+                { "Coin_38", new Vector3( 40.8f,  4.4f, 0f) },
+                { "Coin_39", new Vector3( 42.5f,  3.6f, 0f) },
+                { "Coin_40", new Vector3( 43.8f,  2.8f, 0f) },
+                { "Coin_41", new Vector3( 45.3f,  2.4f, 0f) },
+                { "Coin_42", new Vector3( 46.3f,  2.4f, 0f) },
+                { "Coin_43", new Vector3( 16.0f, -1.6f, 0f) },
+                { "Coin_44", new Vector3( 20.0f, -1.6f, 0f) },
+                { "Coin_45", new Vector3( 24.0f, -1.6f, 0f) },
+                { "Coin_46", new Vector3( 28.0f, -1.6f, 0f) },
+                { "Coin_47", new Vector3( 32.0f, -1.6f, 0f) },
+                { "Coin_48", new Vector3( 36.0f, -1.6f, 0f) }
+            };
+
+            foreach (var kvp in coinPositions)
+            {
+                var coinObj = GameObject.Find(kvp.Key);
+                if (coinObj != null)
+                {
+                    coinObj.transform.position = kvp.Value;
+                    EditorUtility.SetDirty(coinObj);
+                }
             }
 
             EditorSceneManager.MarkSceneDirty(scene);
