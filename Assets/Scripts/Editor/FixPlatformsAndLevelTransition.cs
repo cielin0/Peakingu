@@ -556,6 +556,10 @@ namespace Peakingu.EditorTools
                     }
 
                     tmIce.RefreshAllTiles();
+                    var iceTmCol = iceObj.GetComponent<TilemapCollider2D>();
+                    if (iceTmCol != null) iceTmCol.ProcessTilemapChanges();
+                    var iceComp = iceObj.GetComponent<CompositeCollider2D>();
+                    if (iceComp != null) iceComp.GenerateGeometry();
                     EditorUtility.SetDirty(tmIce);
                 }
             }

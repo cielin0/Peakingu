@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Tilemaps;
 
 namespace Peakingu
 {
@@ -149,6 +150,7 @@ namespace Peakingu
         {
             Time.timeScale = 1f; // Restaurar siempre la escala de tiempo para no romper la física ni el timer
             hasCheckpoint = false; // Cada nuevo nivel comienza con su propio spawn inicial
+            RebuildTilemapColliders();
             FindPlayerAndRegisterSpawn();
             if (scene.name == "Menu")
             {
@@ -180,6 +182,29 @@ namespace Peakingu
                 spawnPosition = player.transform.position;
                 currentCheckpoint = spawnPosition;
             }
+        }
+
+        private void RebuildTilemapColliders()
+        {
+            var tilemapColliders = FindObjectsByType<TilemapCollider2D>(FindObjectsSortMode.None);
+            foreach (var tmCol in tilemapColliders)
+            {
+                if (tmCol != null && tmCol.enabled)
+                {
+                    tmCol.ProcessTilemapChanges();
+                }
+            }
+
+            var compositeColliders = FindObjectsByType<CompositeCollider2D>(FindObjectsSortMode.None);
+            foreach (var comp in compositeColliders)
+            {
+                if (comp != null && comp.enabled && comp.generationType == CompositeCollider2D.GenerationType.Manual || (comp != null && comp.enabled && comp.pathCount == 0))
+                {
+                    comp.GenerateGeometry();
+                }
+            }
+
+            Physics2D.SyncTransforms();
         }
 
         public void SetCheckpoint(Vector3 newCheckpoint)
