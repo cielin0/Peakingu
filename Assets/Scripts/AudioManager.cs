@@ -128,6 +128,7 @@ namespace Peakingu
         private Coroutine crossFadeCoroutine;
 
         private string lastSceneName = "";
+        private bool isSpecialMusicPlaying = false;
 
         // Throttle de pasos
         private float footstepInterval = 0.32f;
@@ -267,8 +268,9 @@ namespace Peakingu
 
         public void PlaySceneMusic(string sceneName)
         {
-            if (sceneName == lastSceneName && (musicSourceA.isPlaying || musicSourceB.isPlaying)) return;
+            if (sceneName == lastSceneName && !isSpecialMusicPlaying && (musicSourceA.isPlaying || musicSourceB.isPlaying)) return;
             lastSceneName = sceneName;
+            isSpecialMusicPlaying = false;
 
             inCaveScene = sceneName.ToLower().Contains("cueva");
 
@@ -292,6 +294,8 @@ namespace Peakingu
 
         private void OnGameOver()
         {
+            isSpecialMusicPlaying = true;
+            lastSceneName = "";
             PlaySfx(sfxGameOver, sfxVolume);
             if (musicGameOver != null)
                 PlayMusic(musicGameOver);
@@ -301,6 +305,8 @@ namespace Peakingu
 
         private void OnVictory()
         {
+            isSpecialMusicPlaying = true;
+            lastSceneName = "";
             PlaySfx(sfxVictory, sfxVolume);
             if (musicVictory != null)
                 PlayMusic(musicVictory);

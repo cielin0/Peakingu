@@ -155,7 +155,7 @@ PolygonCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -188,8 +188,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8c248727e03c664caf15b68e1482f45, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Peakingu.FallingStalactite
-  detectionWidth: 2.4
-  detectionDistance: 9
+  detectionWidth: 3
+  detectionDistance: 11.5
   playerLayer:
     serializedVersion: 2
     m_Bits: 0

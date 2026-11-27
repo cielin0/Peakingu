@@ -321,6 +321,12 @@ namespace Peakingu
             {
                 AudioSource.PlayClipAtPoint(impactSfx, transform.position);
             }
+            else if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlayHit();
+            }
+
+            SpawnIceShatterEffect();
 
             if (groundDangerMarker != null)
             {
@@ -329,6 +335,43 @@ namespace Peakingu
             }
 
             Destroy(gameObject);
+        }
+
+        private static Sprite sharedShardSprite;
+
+        private void SpawnIceShatterEffect()
+        {
+            if (sharedShardSprite == null)
+            {
+                var tex = new Texture2D(4, 4, TextureFormat.RGBA32, false);
+                tex.filterMode = FilterMode.Point;
+                var cols = new Color[16];
+                for (int i = 0; i < 16; i++) cols[i] = Color.white;
+                tex.SetPixels(cols);
+                tex.Apply();
+                sharedShardSprite = Sprite.Create(tex, new Rect(0, 0, 4, 4), new Vector2(0.5f, 0.5f), 16f);
+            }
+
+            int shardCount = 8;
+            for (int i = 0; i < shardCount; i++)
+            {
+                var shard = new GameObject("IceShard");
+                shard.transform.position = transform.position + new Vector3(Random.Range(-0.22f, 0.22f), Random.Range(-0.15f, 0.25f), 0f);
+                shard.transform.localScale = Vector3.one * Random.Range(0.45f, 0.9f);
+
+                var sr = shard.AddComponent<SpriteRenderer>();
+                sr.sprite = sharedShardSprite;
+                sr.color = (i % 2 == 0) ? new Color(0.65f, 0.93f, 1f, 0.95f) : new Color(0.92f, 0.98f, 1f, 0.95f);
+                sr.sortingLayerName = "Environment";
+                sr.sortingOrder = 5;
+
+                var shardRb = shard.AddComponent<Rigidbody2D>();
+                shardRb.gravityScale = 2.6f;
+                shardRb.linearVelocity = new Vector2(Random.Range(-3.2f, 3.2f), Random.Range(2.0f, 4.8f));
+                shardRb.angularVelocity = Random.Range(-420f, 420f);
+
+                Destroy(shard, Random.Range(0.35f, 0.55f));
+            }
         }
 
         private void OnDestroy()
