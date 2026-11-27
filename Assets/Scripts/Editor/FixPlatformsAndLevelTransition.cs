@@ -331,12 +331,12 @@ namespace Peakingu.EditorTools
                 }
             }
 
-            // 3. Ajustar posición de LevelGoal_LaderasBajas para que repose exactamente sobre Plataforma 8 (superficie y = 2.0)
+            // 3. Ajustar posición de LevelGoal_LaderasBajas para que repose exactamente sobre Plataforma 8
             var goalObj = GameObject.Find("LevelGoal_LaderasBajas") ?? GameObject.Find("LevelGoal");
             if (goalObj != null)
             {
                 goalObj.name = "LevelGoal_LaderasBajas";
-                goalObj.transform.position = new Vector3(47.5f, 3.45f, 0f); // Centro de LevelGoal (altura 2.94) sobre superficie y = 2.0
+                goalObj.transform.position = new Vector3(47.5f, 1.5f, 0f); // Superficie de la plataforma en y = 1.5
 
                 var goal = goalObj.GetComponent<LevelGoal>();
                 if (goal != null)
@@ -357,20 +357,19 @@ namespace Peakingu.EditorTools
                 Debug.Log($"[FixPlatforms] LevelGoal_LaderasBajas colocado en {goalObj.transform.position} con Level_1.asset");
             }
 
-            // 4. Ajustar Checkpoint_1 y escala correcta (bandera 1.93u apoyada sobre y = -2.0)
+            // 4. Ajustar Checkpoint_1 y escala correcta
             var cpObj = GameObject.Find("Checkpoint_1");
             if (cpObj != null)
             {
-                cpObj.transform.position = new Vector3(0f, -1.05f, 0f);
+                cpObj.transform.position = new Vector3(0f, -1.9f, 0f);
                 cpObj.transform.localScale = Vector3.one;
                 EditorUtility.SetDirty(cpObj);
             }
 
-            // 5. Asignar SpriteRenderer al Mercader NPC (cartel de tienda con pivot BottomCenter en y = 4.0)
+            // 5. Asignar SpriteRenderer al Mercader NPC (cartel de tienda)
             var merchantObj = GameObject.Find("Merchant_NPC");
             if (merchantObj != null)
             {
-                merchantObj.transform.position = new Vector3(12f, 4f, 0f);
                 var sr = merchantObj.GetComponent<SpriteRenderer>();
                 if (sr == null) sr = merchantObj.AddComponent<SpriteRenderer>();
                 sr.sprite = GetSpriteAtPath("Assets/Sprites/Clean/Decor/cartel.png");
@@ -393,75 +392,74 @@ namespace Peakingu.EditorTools
                 EditorUtility.SetDirty(bgObj);
             }
 
-            // 7. Alinear tileAnchor de Decoration al suelo (0.5, 0, 0) y despejar Checkpoint en x=0
+            // 7. Despejar decoración que colisiona con el Checkpoint en x=0
             var decorObj = GameObject.Find("Grid/Decoration") ?? GameObject.Find("Decoration");
             if (decorObj != null)
             {
                 var tmDecor = decorObj.GetComponent<Tilemap>();
                 if (tmDecor != null)
                 {
-                    tmDecor.tileAnchor = new Vector3(0.5f, 0f, 0f);
                     var tileAtCp = tmDecor.GetTile(new Vector3Int(0, -2, 0));
                     if (tileAtCp != null)
                     {
                         tmDecor.SetTile(new Vector3Int(0, -2, 0), null);
                         tmDecor.SetTile(new Vector3Int(-2, -2, 0), tileAtCp);
+                        EditorUtility.SetDirty(tmDecor);
                     }
-                    EditorUtility.SetDirty(tmDecor);
                 }
             }
 
             // 8. Ordenar y posicionar las 48 monedas de forma fluida y lógica en el nivel
             var coinPositions = new System.Collections.Generic.Dictionary<string, Vector3>()
             {
-                { "Coin_1",  new Vector3(-12.0f, -1.25f, 0f) },
-                { "Coin_2",  new Vector3(-10.5f, -1.25f, 0f) },
-                { "Coin_3",  new Vector3( -9.0f, -1.25f, 0f) },
-                { "Coin_4",  new Vector3( -7.5f, -1.25f, 0f) },
-                { "Coin_5",  new Vector3( -4.5f,  1.75f, 0f) },
-                { "Coin_6",  new Vector3( -3.5f,  1.75f, 0f) },
-                { "Coin_7",  new Vector3( -2.5f,  1.75f, 0f) },
-                { "Coin_8",  new Vector3( -1.5f, -1.25f, 0f) },
-                { "Coin_9",  new Vector3(  1.5f, -1.25f, 0f) },
-                { "Coin_10", new Vector3(  2.5f, -1.25f, 0f) },
-                { "Coin_11", new Vector3(  3.5f,  1.75f, 0f) },
-                { "Coin_12", new Vector3(  4.8f,  1.75f, 0f) },
-                { "Coin_13", new Vector3(  6.2f,  1.75f, 0f) },
-                { "Coin_14", new Vector3(  9.8f,  4.75f, 0f) },
-                { "Coin_15", new Vector3( 10.8f,  4.75f, 0f) },
-                { "Coin_16", new Vector3( 13.5f,  4.75f, 0f) },
-                { "Coin_17", new Vector3( 14.8f,  5.20f, 0f) },
-                { "Coin_18", new Vector3( 15.8f,  6.00f, 0f) },
-                { "Coin_19", new Vector3( 17.5f,  6.75f, 0f) },
-                { "Coin_20", new Vector3( 18.5f,  6.75f, 0f) },
-                { "Coin_21", new Vector3( 19.5f,  6.75f, 0f) },
-                { "Coin_22", new Vector3( 20.5f,  6.75f, 0f) },
-                { "Coin_23", new Vector3( 21.8f,  7.20f, 0f) },
-                { "Coin_24", new Vector3( 22.8f,  8.00f, 0f) },
-                { "Coin_25", new Vector3( 24.5f,  8.75f, 0f) },
-                { "Coin_26", new Vector3( 25.5f,  8.75f, 0f) },
-                { "Coin_27", new Vector3( 26.5f,  8.75f, 0f) },
-                { "Coin_28", new Vector3( 27.5f,  8.75f, 0f) },
-                { "Coin_29", new Vector3( 29.0f,  7.80f, 0f) },
-                { "Coin_30", new Vector3( 30.0f,  7.10f, 0f) },
-                { "Coin_31", new Vector3( 31.8f,  6.75f, 0f) },
-                { "Coin_32", new Vector3( 32.8f,  6.75f, 0f) },
-                { "Coin_33", new Vector3( 33.8f,  6.75f, 0f) },
-                { "Coin_34", new Vector3( 35.5f,  5.90f, 0f) },
-                { "Coin_35", new Vector3( 36.8f,  5.10f, 0f) },
-                { "Coin_36", new Vector3( 38.8f,  4.75f, 0f) },
-                { "Coin_37", new Vector3( 39.8f,  4.75f, 0f) },
-                { "Coin_38", new Vector3( 40.8f,  4.75f, 0f) },
-                { "Coin_39", new Vector3( 42.5f,  3.80f, 0f) },
-                { "Coin_40", new Vector3( 43.8f,  3.00f, 0f) },
-                { "Coin_41", new Vector3( 45.3f,  2.75f, 0f) },
-                { "Coin_42", new Vector3( 46.3f,  2.75f, 0f) },
-                { "Coin_43", new Vector3( 16.0f, -1.25f, 0f) },
-                { "Coin_44", new Vector3( 20.0f, -1.25f, 0f) },
-                { "Coin_45", new Vector3( 24.0f, -1.25f, 0f) },
-                { "Coin_46", new Vector3( 28.0f, -1.25f, 0f) },
-                { "Coin_47", new Vector3( 32.0f, -1.25f, 0f) },
-                { "Coin_48", new Vector3( 36.0f, -1.25f, 0f) }
+                { "Coin_1",  new Vector3(-12.0f, -1.6f, 0f) },
+                { "Coin_2",  new Vector3(-10.5f, -1.6f, 0f) },
+                { "Coin_3",  new Vector3( -9.0f, -1.6f, 0f) },
+                { "Coin_4",  new Vector3( -7.5f, -1.6f, 0f) },
+                { "Coin_5",  new Vector3( -4.5f,  1.4f, 0f) },
+                { "Coin_6",  new Vector3( -3.5f,  1.4f, 0f) },
+                { "Coin_7",  new Vector3( -2.5f,  1.4f, 0f) },
+                { "Coin_8",  new Vector3( -1.5f, -1.6f, 0f) },
+                { "Coin_9",  new Vector3(  1.5f, -1.6f, 0f) },
+                { "Coin_10", new Vector3(  2.5f, -1.6f, 0f) },
+                { "Coin_11", new Vector3(  3.5f,  1.4f, 0f) },
+                { "Coin_12", new Vector3(  4.8f,  1.4f, 0f) },
+                { "Coin_13", new Vector3(  6.2f,  1.4f, 0f) },
+                { "Coin_14", new Vector3(  9.8f,  4.4f, 0f) },
+                { "Coin_15", new Vector3( 10.8f,  4.4f, 0f) },
+                { "Coin_16", new Vector3( 13.5f,  4.4f, 0f) },
+                { "Coin_17", new Vector3( 14.8f,  4.8f, 0f) },
+                { "Coin_18", new Vector3( 15.8f,  5.6f, 0f) },
+                { "Coin_19", new Vector3( 17.5f,  6.4f, 0f) },
+                { "Coin_20", new Vector3( 18.5f,  6.4f, 0f) },
+                { "Coin_21", new Vector3( 19.5f,  6.4f, 0f) },
+                { "Coin_22", new Vector3( 20.5f,  6.4f, 0f) },
+                { "Coin_23", new Vector3( 21.8f,  6.8f, 0f) },
+                { "Coin_24", new Vector3( 22.8f,  7.6f, 0f) },
+                { "Coin_25", new Vector3( 24.5f,  8.4f, 0f) },
+                { "Coin_26", new Vector3( 25.5f,  8.4f, 0f) },
+                { "Coin_27", new Vector3( 26.5f,  8.4f, 0f) },
+                { "Coin_28", new Vector3( 27.5f,  8.4f, 0f) },
+                { "Coin_29", new Vector3( 29.0f,  7.5f, 0f) },
+                { "Coin_30", new Vector3( 30.0f,  6.8f, 0f) },
+                { "Coin_31", new Vector3( 31.8f,  6.4f, 0f) },
+                { "Coin_32", new Vector3( 32.8f,  6.4f, 0f) },
+                { "Coin_33", new Vector3( 33.8f,  6.4f, 0f) },
+                { "Coin_34", new Vector3( 35.5f,  5.6f, 0f) },
+                { "Coin_35", new Vector3( 36.8f,  4.8f, 0f) },
+                { "Coin_36", new Vector3( 38.8f,  4.4f, 0f) },
+                { "Coin_37", new Vector3( 39.8f,  4.4f, 0f) },
+                { "Coin_38", new Vector3( 40.8f,  4.4f, 0f) },
+                { "Coin_39", new Vector3( 42.5f,  3.6f, 0f) },
+                { "Coin_40", new Vector3( 43.8f,  2.8f, 0f) },
+                { "Coin_41", new Vector3( 45.3f,  2.4f, 0f) },
+                { "Coin_42", new Vector3( 46.3f,  2.4f, 0f) },
+                { "Coin_43", new Vector3( 16.0f, -1.6f, 0f) },
+                { "Coin_44", new Vector3( 20.0f, -1.6f, 0f) },
+                { "Coin_45", new Vector3( 24.0f, -1.6f, 0f) },
+                { "Coin_46", new Vector3( 28.0f, -1.6f, 0f) },
+                { "Coin_47", new Vector3( 32.0f, -1.6f, 0f) },
+                { "Coin_48", new Vector3( 36.0f, -1.6f, 0f) }
             };
 
             foreach (var kvp in coinPositions)
@@ -615,7 +613,7 @@ namespace Peakingu.EditorTools
                 var goalObj = GameObject.Find("LevelGoal_LaderasBajas") ?? GameObject.Find("LevelGoal");
                 if (goalObj != null)
                 {
-                    goalObj.transform.position = new Vector3(47.5f, 3.45f, 0f);
+                    goalObj.transform.position = new Vector3(47.5f, 1.0f, 0f);
                     EditorUtility.SetDirty(goalObj);
                 }
 
