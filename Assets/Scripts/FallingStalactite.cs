@@ -323,7 +323,7 @@ namespace Peakingu
             }
             else if (AudioManager.Instance != null)
             {
-                AudioManager.Instance.PlayHit();
+                AudioManager.Instance.PlayLand();
             }
 
             SpawnIceShatterEffect();
