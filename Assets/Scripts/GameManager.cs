@@ -198,7 +198,7 @@ namespace Peakingu
             var compositeColliders = FindObjectsByType<CompositeCollider2D>(FindObjectsSortMode.None);
             foreach (var comp in compositeColliders)
             {
-                if (comp != null && comp.enabled && comp.generationType == CompositeCollider2D.GenerationType.Manual || (comp != null && comp.enabled && comp.pathCount == 0))
+                if (comp != null && comp.enabled)
                 {
                     comp.GenerateGeometry();
                 }
