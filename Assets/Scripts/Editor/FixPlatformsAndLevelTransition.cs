@@ -331,12 +331,12 @@ namespace Peakingu.EditorTools
                 }
             }
 
-            // 3. Ajustar posición de LevelGoal_LaderasBajas para que repose exactamente sobre Plataforma 8
+            // 3. Ajustar posición de LevelGoal_LaderasBajas para que repose exactamente sobre Plataforma 8 (y = 2.0)
             var goalObj = GameObject.Find("LevelGoal_LaderasBajas") ?? GameObject.Find("LevelGoal");
             if (goalObj != null)
             {
                 goalObj.name = "LevelGoal_LaderasBajas";
-                goalObj.transform.position = new Vector3(47.5f, 1.5f, 0f); // Superficie de la plataforma en y = 1.5
+                goalObj.transform.position = new Vector3(47.5f, 3.45f, 0f);
 
                 var goal = goalObj.GetComponent<LevelGoal>();
                 if (goal != null)
@@ -357,19 +357,20 @@ namespace Peakingu.EditorTools
                 Debug.Log($"[FixPlatforms] LevelGoal_LaderasBajas colocado en {goalObj.transform.position} con Level_1.asset");
             }
 
-            // 4. Ajustar Checkpoint_1 y escala correcta
+            // 4. Ajustar Checkpoint_1 y escala correcta (apoyado sobre y = -2.0)
             var cpObj = GameObject.Find("Checkpoint_1");
             if (cpObj != null)
             {
-                cpObj.transform.position = new Vector3(0f, -1.9f, 0f);
+                cpObj.transform.position = new Vector3(0f, -1.05f, 0f);
                 cpObj.transform.localScale = Vector3.one;
                 EditorUtility.SetDirty(cpObj);
             }
 
-            // 5. Asignar SpriteRenderer al Mercader NPC (cartel de tienda)
+            // 5. Asignar SpriteRenderer al Mercader NPC (cartel de tienda con pivot BottomCenter en y = 4.0)
             var merchantObj = GameObject.Find("Merchant_NPC");
             if (merchantObj != null)
             {
+                merchantObj.transform.position = new Vector3(12f, 4f, 0f);
                 var sr = merchantObj.GetComponent<SpriteRenderer>();
                 if (sr == null) sr = merchantObj.AddComponent<SpriteRenderer>();
                 sr.sprite = GetSpriteAtPath("Assets/Sprites/Clean/Decor/cartel.png");
@@ -383,8 +384,8 @@ namespace Peakingu.EditorTools
             if (bgObj == null)
             {
                 bgObj = new GameObject("Background_Mountains");
-                bgObj.transform.position = new Vector3(18f, 4f, 5f);
-                bgObj.transform.localScale = new Vector3(2.5f, 2.5f, 1f);
+                bgObj.transform.position = new Vector3(18f, 8.5f, 5f);
+                bgObj.transform.localScale = new Vector3(2.2f, 2.2f, 1f);
                 var sr = bgObj.AddComponent<SpriteRenderer>();
                 sr.sprite = GetSpriteAtPath("Assets/Sprites/Clean/Background/montanas_lejanas.png");
                 sr.sortingLayerName = "Background";
@@ -392,20 +393,21 @@ namespace Peakingu.EditorTools
                 EditorUtility.SetDirty(bgObj);
             }
 
-            // 7. Despejar decoración que colisiona con el Checkpoint en x=0
+            // 7. Alinear tileAnchor de Decoration al suelo (0.5, 0, 0) y despejar Checkpoint en x=0
             var decorObj = GameObject.Find("Grid/Decoration") ?? GameObject.Find("Decoration");
             if (decorObj != null)
             {
                 var tmDecor = decorObj.GetComponent<Tilemap>();
                 if (tmDecor != null)
                 {
+                    tmDecor.tileAnchor = new Vector3(0.5f, 0f, 0f);
                     var tileAtCp = tmDecor.GetTile(new Vector3Int(0, -2, 0));
                     if (tileAtCp != null)
                     {
                         tmDecor.SetTile(new Vector3Int(0, -2, 0), null);
                         tmDecor.SetTile(new Vector3Int(-2, -2, 0), tileAtCp);
-                        EditorUtility.SetDirty(tmDecor);
                     }
+                    EditorUtility.SetDirty(tmDecor);
                 }
             }
 
