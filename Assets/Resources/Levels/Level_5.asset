@@ -21,5 +21,6 @@ MonoBehaviour:
   difficulty: 4
   coinReward: 50
   nextLevelData: {fileID: 0}
-  nextSceneName: 
-  isFinalLevel: 1
+  nextSceneName: Final
+  isFinalLevel: 0
+  burnFishInsteadOfGameOver: 1

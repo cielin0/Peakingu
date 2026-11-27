@@ -126,8 +126,8 @@ namespace Peakingu
                 return;
             }
 
-            // 2. Si ya ocurrió Game Over o Victoria, no permitir abrir/cerrar pausa
-            if (isGameOver || isVictory)
+            // 2. Si ya ocurrió Game Over, Victoria o está corriendo la secuencia final, no permitir abrir/cerrar pausa
+            if (isGameOver || isVictory || EndingController.IsSequenceRunning)
             {
                 return;
             }
@@ -170,7 +170,7 @@ namespace Peakingu
         /// </summary>
         public void PauseGame()
         {
-            if (isGameOver || isVictory) return;
+            if (isGameOver || isVictory || EndingController.IsSequenceRunning) return;
 
             isPaused = true;
             Time.timeScale = 0f; // Pausa la física y el conteo regresivo de Time.deltaTime sin alterar datos
@@ -325,14 +325,24 @@ namespace Peakingu
             {
                 victoryPanel.SetActive(true);
 
+                bool fishBurnt = GameManager.Instance != null && GameManager.Instance.FishBurnt;
+
+                if (victoryTitleText != null)
+                {
+                    victoryTitleText.text = fishBurnt
+                        ? "¡LLEGASTE A CASA!\nPero el pescado ya es carbón"
+                        : "¡CUMBRE ALCANZADA!\nEl pescado en el horno está a salvo";
+                }
+
                 if (victoryStatsText != null && GameManager.Instance != null)
                 {
                     float timeLeft = GameManager.Instance.CurrentTimeRemaining;
                     int minutes = Mathf.FloorToInt(timeLeft / 60f);
                     int seconds = Mathf.FloorToInt(timeLeft % 60f);
                     int coins = GameManager.Instance.CurrentCoins;
+                    string timeStr = fishBurnt ? "AGOTADO" : $"{minutes:00}:{seconds:00}";
 
-                    victoryStatsText.text = $"TIEMPO RESTANTE: {minutes:00}:{seconds:00}\nMONEDAS RECOLECTADAS: {coins}";
+                    victoryStatsText.text = $"TIEMPO RESTANTE: {timeStr}\nMONEDAS RECOLECTADAS: {coins}";
                 }
             }
 
@@ -362,8 +372,9 @@ namespace Peakingu
             }
 
             string currentSceneName = SceneManager.GetActiveScene().name;
-            SceneManager.LoadScene(currentSceneName);
-            Debug.Log($"[PauseManager] Partida reiniciada. Escena '{currentSceneName}' recargada con Time.timeScale = 1f.");
+            string targetScene = currentSceneName == "Final" ? "Nivel1" : currentSceneName;
+            SceneManager.LoadScene(targetScene);
+            Debug.Log($"[PauseManager] Partida reiniciada. Escena '{targetScene}' cargada con Time.timeScale = 1f.");
         }
 
         /// <summary>

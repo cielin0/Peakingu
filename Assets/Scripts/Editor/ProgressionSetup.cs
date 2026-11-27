@@ -68,13 +68,13 @@ namespace Peakingu.EditorTools
                 Directory.CreateDirectory(LEVELS_DIR);
             }
 
-            var configs = new (int num, string name, string scene, float time, float speed, LevelDifficulty diff, int reward, string desc, bool isFinal)[]
+            var configs = new (int num, string name, string scene, float time, float speed, LevelDifficulty diff, int reward, string desc, bool isFinal, bool burnFish)[]
             {
-                (1, "Laderas Bajas",    "Nivel1", 240f, 1.00f, LevelDifficulty.Facil,   15, "Aprende el movimiento básico, salto y recolección de monedas en la ladera nevada.", false),
-                (2, "Ruta Helada",      "Nivel2", 210f, 1.10f, LevelDifficulty.Normal,  20, "El suelo es más resbaladizo. Plataformas flotantes y desniveles mayores hacia la cueva.", false),
-                (3, "Cueva Glaciar",    "Cueva",  180f, 1.25f, LevelDifficulty.Dificil, 25, "Oscuridad subterránea, hielo pulido y estalactitas que se desprenden al pasar.", false),
-                (4, "Pico Escarpado",   "Nivel4", 150f, 1.40f, LevelDifficulty.Experto, 35, "Grietas profundas y ascenso vertical donde el Gancho Cyborg es clave para avanzar.", false),
-                (5, "Cima Peakingu",    "Nivel5", 120f, 1.60f, LevelDifficulty.Extremo, 50, "¡La cumbre final! Carrera contrarreloj para salvar el pescado antes de que se queme en el horno.", true),
+                (1, "Laderas Bajas",    "Nivel1", 240f, 1.00f, LevelDifficulty.Facil,   15, "Aprende el movimiento básico, salto y recolección de monedas en la ladera nevada.", false, false),
+                (2, "Ruta Helada",      "Nivel2", 210f, 1.10f, LevelDifficulty.Normal,  20, "El suelo es más resbaladizo. Plataformas flotantes y desniveles mayores hacia la cueva.", false, false),
+                (3, "Cueva Glaciar",    "Cueva",  180f, 1.25f, LevelDifficulty.Dificil, 25, "Oscuridad subterránea, hielo pulido y estalactitas que se desprenden al pasar.", false, false),
+                (4, "Pico Escarpado",   "Nivel4", 150f, 1.40f, LevelDifficulty.Experto, 35, "Grietas profundas y ascenso vertical donde el Gancho Cyborg es clave para avanzar.", false, false),
+                (5, "Cima Peakingu",    "Nivel5", 120f, 1.60f, LevelDifficulty.Extremo, 50, "¡La cumbre final! Carrera contrarreloj para salvar el pescado antes de que se queme en el horno.", false, true),
             };
 
             List<LevelData> list = new List<LevelData>();
@@ -100,7 +100,8 @@ namespace Peakingu.EditorTools
                 data.coinReward = c.reward;
                 data.description = c.desc;
                 data.isFinalLevel = c.isFinal;
-                data.nextSceneName = (i < configs.Length - 1) ? configs[i + 1].scene : "";
+                data.burnFishInsteadOfGameOver = c.burnFish;
+                data.nextSceneName = (i < configs.Length - 1) ? configs[i + 1].scene : "Final";
 
                 EditorUtility.SetDirty(data);
                 list.Add(data);
@@ -171,7 +172,7 @@ namespace Peakingu.EditorTools
 
             // 5. Nivel5 (Nivel 5) - Si no existe, duplicar Nivel1
             EnsureSceneExists($"{scenesDir}/Nivel1.unity", $"{scenesDir}/Nivel5.unity");
-            SetupGoalInScene($"{scenesDir}/Nivel5.unity", levelDataList[4], goalPrefab, new Vector3(50f, 6f, 0f));
+            SetupGoalInScene($"{scenesDir}/Nivel5.unity", levelDataList[4], goalPrefab, new Vector3(50f, 6f, 0f), skipIfExists: true);
         }
 
         private static void EnsureSceneExists(string sourcePath, string destPath)
@@ -185,7 +186,7 @@ namespace Peakingu.EditorTools
             }
         }
 
-        private static void SetupGoalInScene(string scenePath, LevelData data, GameObject goalPrefab, Vector3 defaultPos)
+        private static void SetupGoalInScene(string scenePath, LevelData data, GameObject goalPrefab, Vector3 defaultPos, bool skipIfExists = false)
         {
             if (!File.Exists(scenePath)) return;
 
@@ -200,6 +201,11 @@ namespace Peakingu.EditorTools
             }
 
             var existingGoal = Object.FindAnyObjectByType<LevelGoal>();
+            if (existingGoal != null && skipIfExists)
+            {
+                Debug.Log($"[ProgressionSetup] LevelGoal ya existe en '{scenePath}', se conserva sin mover ni reconfigurar.");
+                return;
+            }
             if (existingGoal == null)
             {
                 var instance = (GameObject)PrefabUtility.InstantiatePrefab(goalPrefab);
@@ -232,7 +238,8 @@ namespace Peakingu.EditorTools
                 "Assets/Scenes/Nivel2.unity",
                 "Assets/Scenes/Cueva.unity",
                 "Assets/Scenes/Nivel4.unity",
-                "Assets/Scenes/Nivel5.unity"
+                "Assets/Scenes/Nivel5.unity",
+                "Assets/Scenes/Final.unity"
             };
 
             List<EditorBuildSettingsScene> buildScenes = new List<EditorBuildSettingsScene>();

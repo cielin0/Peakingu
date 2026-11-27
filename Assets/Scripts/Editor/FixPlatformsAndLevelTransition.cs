@@ -589,7 +589,7 @@ namespace Peakingu.EditorTools
 
         private static void FixNivel4y5(Tile[] cleanTiles, RuleTile ruleTile)
         {
-            string[] scenes = new string[] { "Assets/Scenes/Nivel4.unity", "Assets/Scenes/Nivel5.unity" };
+            string[] scenes = new string[] { "Assets/Scenes/Nivel4.unity" };
             foreach (var path in scenes)
             {
                 if (!File.Exists(path)) continue;

@@ -57,6 +57,10 @@ namespace Peakingu
         [Tooltip("Indica si este es el nivel final (Nivel 5) que otorga la pantalla de Victoria del juego.")]
         public bool isFinalLevel = false;
 
+        [Header("── Regla de Pescado Quemado ──")]
+        [Tooltip("Si es true, agotar el tiempo a 00:00 quema el pescado en el horno pero NO causa Game Over.")]
+        public bool burnFishInsteadOfGameOver = false;
+
         public bool HasNextLevel => nextLevelData != null || (!string.IsNullOrEmpty(nextSceneName) && !isFinalLevel);
         public string TargetNextScene => nextLevelData != null ? nextLevelData.sceneName : nextSceneName;
     }

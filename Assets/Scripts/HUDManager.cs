@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -62,6 +63,12 @@ namespace Peakingu
         [Tooltip("Texto descriptivo de la causa de Game Over.")]
         [SerializeField] private TextMeshProUGUI gameOverReasonText;
 
+        [Header("--- Alerta de Pescado Quemado ---")]
+        [Tooltip("Texto breve que avisa cuando se agota el tiempo en el Nivel 5 sin causar Game Over.")]
+        [SerializeField] private TextMeshProUGUI fishBurntAlertText;
+
+        private Coroutine fishBurntAlertCoroutine;
+
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -102,6 +109,7 @@ namespace Peakingu
             GameManager.OnLivesChanged += UpdateLivesUI;
             GameManager.OnCoinsChanged += UpdateCoinsUI;
             GameManager.OnTimerTick += UpdateTimerUI;
+            GameManager.OnTimerExpired += HandleTimerExpired;
             GameManager.OnGameOver += HandleGameOver;
         }
 
@@ -110,6 +118,7 @@ namespace Peakingu
             GameManager.OnLivesChanged -= UpdateLivesUI;
             GameManager.OnCoinsChanged -= UpdateCoinsUI;
             GameManager.OnTimerTick -= UpdateTimerUI;
+            GameManager.OnTimerExpired -= HandleTimerExpired;
             GameManager.OnGameOver -= HandleGameOver;
         }
 
@@ -202,6 +211,58 @@ namespace Peakingu
             int meters = Mathf.Max(0, Mathf.RoundToInt((currentY - baseHeightY) * heightMultiplier));
 
             heightText.text = $"{heightPrefix}{meters}m";
+        }
+
+        private void HandleTimerExpired()
+        {
+            if (GameManager.Instance != null && GameManager.Instance.FishBurnt)
+            {
+                if (fishBurntAlertCoroutine != null)
+                {
+                    StopCoroutine(fishBurntAlertCoroutine);
+                }
+                fishBurntAlertCoroutine = StartCoroutine(ShowFishBurntAlertRoutine());
+            }
+        }
+
+        private IEnumerator ShowFishBurntAlertRoutine()
+        {
+            EnsureFishBurntAlertText();
+            if (fishBurntAlertText != null)
+            {
+                fishBurntAlertText.text = "¡EL PESCADO SE QUEMÓ! Igual llega a casa";
+                fishBurntAlertText.gameObject.SetActive(true);
+            }
+
+            yield return new WaitForSecondsRealtime(3f);
+
+            if (fishBurntAlertText != null)
+            {
+                fishBurntAlertText.gameObject.SetActive(false);
+            }
+            fishBurntAlertCoroutine = null;
+        }
+
+        private void EnsureFishBurntAlertText()
+        {
+            if (fishBurntAlertText != null) return;
+
+            var alertObj = new GameObject("FishBurntAlertText");
+            alertObj.transform.SetParent(transform, false);
+
+            var rt = alertObj.AddComponent<RectTransform>();
+            rt.anchorMin = new Vector2(0.5f, 0.82f);
+            rt.anchorMax = new Vector2(0.5f, 0.82f);
+            rt.pivot = new Vector2(0.5f, 0.5f);
+            rt.sizeDelta = new Vector2(720f, 60f);
+
+            fishBurntAlertText = alertObj.AddComponent<TextMeshProUGUI>();
+            fishBurntAlertText.alignment = TextAlignmentOptions.Center;
+            fishBurntAlertText.fontSize = 28f;
+            fishBurntAlertText.fontStyle = FontStyles.Bold;
+            fishBurntAlertText.color = new Color(1f, 0.45f, 0.2f, 1f);
+            fishBurntAlertText.textWrappingMode = TextWrappingModes.Normal;
+            alertObj.SetActive(false);
         }
 
         private void HandleGameOver()

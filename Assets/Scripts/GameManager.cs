@@ -27,6 +27,9 @@ namespace Peakingu
         [Tooltip("Indica si el temporizador regresivo se encuentra activo.")]
         [SerializeField] private bool timerIsRunning = true;
         [System.NonSerialized] private float currentTimeRemaining;
+        private bool burnFishInsteadOfGameOver = false;
+
+        public bool FishBurnt { get; private set; }
 
         public float TimerSpeedMultiplier
         {
@@ -105,10 +108,21 @@ namespace Peakingu
             {
                 currentTimeRemaining = 0f;
                 timerIsRunning = false;
-                OnTimerTick?.Invoke(currentTimeRemaining);
-                OnTimerExpired?.Invoke();
-                Debug.Log("[GameManager] ¡El tiempo llegó a 00:00! El pescado se ha quemado.");
-                TriggerGameOver();
+
+                if (burnFishInsteadOfGameOver)
+                {
+                    FishBurnt = true;
+                    OnTimerTick?.Invoke(currentTimeRemaining);
+                    OnTimerExpired?.Invoke();
+                    Debug.Log("[GameManager] ¡El tiempo llegó a 00:00! El pescado se ha quemado, pero el nivel continúa.");
+                }
+                else
+                {
+                    OnTimerTick?.Invoke(currentTimeRemaining);
+                    OnTimerExpired?.Invoke();
+                    Debug.Log("[GameManager] ¡El tiempo llegó a 00:00! El pescado se ha quemado.");
+                    TriggerGameOver();
+                }
             }
             else
             {
@@ -124,6 +138,7 @@ namespace Peakingu
             if (levelData == null) return;
 
             timerSpeedMultiplier = levelData.timeSpeed;
+            burnFishInsteadOfGameOver = levelData.burnFishInsteadOfGameOver;
 
             // Si es una partida fresca o no había tiempo establecido
             if (!SaveSystem.HasPendingLoad && (currentTimeRemaining <= 0f || currentTimeRemaining >= initialTimeInSeconds))
@@ -152,9 +167,14 @@ namespace Peakingu
             hasCheckpoint = false; // Cada nuevo nivel comienza con su propio spawn inicial
             RebuildTilemapColliders();
             FindPlayerAndRegisterSpawn();
-            if (scene.name == "Menu")
+            if (scene.name == "Menu" || scene.name == "Final")
             {
                 timerIsRunning = false;
+                if (scene.name == "Final")
+                {
+                    SaveSystem.ClearPendingLoad();
+                }
+                return;
             }
             else
             {
@@ -374,6 +394,7 @@ namespace Peakingu
         {
             Time.timeScale = 1f; // Garantizar escala normal de tiempo
             hasCheckpoint = false;
+            FishBurnt = false;
             ResetLives();
             ResetCoins();
             ResetTimer();

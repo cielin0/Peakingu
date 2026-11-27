@@ -3,7 +3,17 @@
 ## 1. Ya implementado
 - Inicialización y verificación del proyecto base en Unity 6 (6000.5.10f1 / 6000.6) con plantilla Universal 2D (URP).
 - Estructura de carpetas completa en `Assets/`.
-- Escenas operativas (`Menu.unity`, `Nivel1.unity`, `Cueva.unity`) en Build Settings.
+- **Escenas en Build Settings (`Menu` > `Nivel1` > `Nivel2` > `Cueva` > `Nivel4` > `Nivel5` > `Final`)**:
+  - `Menu.unity`: Menú principal completo.
+  - `Nivel1.unity`: Laderas Bajas (escena base jugada y decorada).
+  - `Nivel2.unity`: Ruta Helada *(aún es copia estructural de `Nivel1`, con plataformas de hielo resbaladizo `Tilemap_Ice`)*.
+  - `Cueva.unity`: Cueva Glaciar (oscuridad URP 2D, hielo, estalactitas que caen y se rompen, puntos de gancho).
+  - `Nivel4.unity`: Pico Escarpado *(aún es copia estructural de `Nivel1`)*.
+  - `Nivel5.unity`: Cima Peakingu (ascenso vertical de 70 unidades con nieve, hielo, 3 checkpoints, 25 monedas, 6 `GrapplePoint` opcionales, `ParallaxBackground`, casa en la cima y meta hacia `Final`).
+  - `Final.unity`: Interior de la casa en la cima (`EndingController` + `FrameAnimator`, muestra pescado bueno con vapor o quemado con humo según `FishBurnt` y abre el panel de victoria).
+- **Regla del Pescado Quemado (`FishBurnt` / `burnFishInsteadOfGameOver`)**:
+  - `LevelData.burnFishInsteadOfGameOver`: en niveles 1 a 4 es `false` (llegar a `00:00` dispara Game Over). En `Level_5.asset` es `true` (`isFinalLevel = false`, `nextSceneName = "Final"`).
+  - `GameManager.FishBurnt`: en el Nivel 5, agotar el tiempo pone `FishBurnt = true`, deja el reloj en `00:00` y permite seguir jugando hasta llegar a la casa; `HUDManager` muestra un aviso de 3 segundos y `PauseManager.ShowVictory()` / `EndingController` adaptan título, estadísticas (`AGOTADO`) y cinemática final.
 - Tags, Layers y Sorting Layers configurados con matriz de física 2D.
 - **Iluminación URP 2D (Corrección de pantalla oscura / siluetas negras)**:
   - `Global Light 2D` actualizada en todas las escenas para iluminar todas las Sorting Layers del proyecto (`Default`, `Background`, `Environment`, `Collectibles`, `Characters`, `Foreground`).
@@ -174,6 +184,5 @@
 - **Aislamiento Seguro de Singletons (`PlayerStats` / `ShopManager`):** En componentes adicionales adjuntos a objetos principales como `GameManager`, la eliminación de duplicados en `Awake()` utiliza `Destroy(this)` en vez de `Destroy(gameObject)`. Esto evita que un componente secundario duplicado destruya por error el GameObject del `GameManager`, preservando intacto el contador de vidas, el temporizador del horno y la recolección de monedas.
 
 ## 3. Pendiente
-- Configuración de Input Actions (WASD, Espacio, E, F, R, ESC) con el nuevo Input System.
-- Mecánica activa de lanzamiento de gancho cyborg (tecla R) al tener desbloqueada la Mano con Gancho.
-- Construcción y ambientación de los niveles restantes (Nivel 2, Escena 3 Caverna, etc.).
+- Diseño propio y diferenciación de plataformas/recorrido para Nivel2.unity y Nivel4.unity (actualmente copias de Nivel1.unity).
+- Ajuste fino y pruebas de playtest completas de principio a fin (Menu -> Nivel1..Nivel5 -> Final).
